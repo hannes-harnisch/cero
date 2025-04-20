@@ -28,41 +28,41 @@ fibonacci(var uint32 n) -> uint32 {
 
 	AstCompare c(ast);
 	c.root();
-	c.function_definition(cero::AccessSpecifier::None, "fibonacci", [&] {
-		c.function_parameter(cero::ParameterSpecifier::Var, "n", [&] {
+	c.function_definition(cero::AccessSpecifier::None, "fibonacci", [](AstCompare& c) {
+		c.function_parameter(cero::ParameterSpecifier::Var, "n", [](AstCompare& c) {
 			c.name_expr("uint32");
 		});
-		c.function_output("", [&] {
+		c.function_output("", [](AstCompare& c) {
 			c.name_expr("uint32");
 		});
-		c.binding_statement(cero::BindingSpecifier::Var, "result", [&] {
-			c.name_expr("uint32");
-			c.numeric_literal_expr(cero::NumericLiteralKind::Decimal);
-		});
-		c.binding_statement(cero::BindingSpecifier::Var, "next", [&] {
+		c.binding_statement(cero::BindingSpecifier::Var, "result", [](AstCompare& c) {
 			c.name_expr("uint32");
 			c.numeric_literal_expr(cero::NumericLiteralKind::Decimal);
 		});
-		c.while_loop([&] {
-			c.binary_expr(cero::BinaryOperator::NotEq, [&] {
-				c.unary_expr(cero::UnaryOperator::PostDec, [&] {
+		c.binding_statement(cero::BindingSpecifier::Var, "next", [](AstCompare& c) {
+			c.name_expr("uint32");
+			c.numeric_literal_expr(cero::NumericLiteralKind::Decimal);
+		});
+		c.while_loop([](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::NotEq, [](AstCompare& c) {
+				c.unary_expr(cero::UnaryOperator::PostDec, [](AstCompare& c) {
 					c.name_expr("n");
 				});
 				c.numeric_literal_expr(cero::NumericLiteralKind::Decimal);
 			});
-			c.binding_statement(cero::BindingSpecifier::Let, "temp", [&] {
+			c.binding_statement(cero::BindingSpecifier::Let, "temp", [](AstCompare& c) {
 				c.name_expr("next");
 			});
-			c.binary_expr(cero::BinaryOperator::Assign, [&] {
+			c.binary_expr(cero::BinaryOperator::Assign, [](AstCompare& c) {
 				c.name_expr("next");
 				c.name_expr("result");
 			});
-			c.binary_expr(cero::BinaryOperator::AddAssign, [&] {
+			c.binary_expr(cero::BinaryOperator::AddAssign, [](AstCompare& c) {
 				c.name_expr("result");
 				c.name_expr("temp");
 			});
 		});
-		c.return_expr([&] {
+		c.return_expr([](AstCompare& c) {
 			c.name_expr("result");
 		});
 	});
@@ -87,28 +87,28 @@ public divChecked(int32 a, int32 b) -> Opt<int32> {
 
 	AstCompare c(ast);
 	c.root();
-	c.function_definition(cero::AccessSpecifier::Public, "divChecked", [&] {
-		c.function_parameter(cero::ParameterSpecifier::None, "a", [&] {
+	c.function_definition(cero::AccessSpecifier::Public, "divChecked", [](AstCompare& c) {
+		c.function_parameter(cero::ParameterSpecifier::None, "a", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_parameter(cero::ParameterSpecifier::None, "b", [&] {
+		c.function_parameter(cero::ParameterSpecifier::None, "b", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_output("", [&] {
-			c.generic_name_expr("Opt", [&] {
+		c.function_output("", [](AstCompare& c) {
+			c.generic_name_expr("Opt", [](AstCompare& c) {
 				c.name_expr("int32");
 			});
 		});
-		c.if_expr([&] {
-			c.binary_expr(cero::BinaryOperator::Eq, [&] {
+		c.if_expr([](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::Eq, [](AstCompare& c) {
 				c.name_expr("b");
 				c.numeric_literal_expr(cero::NumericLiteralKind::Decimal);
 			});
-			c.return_expr([&] {
+			c.return_expr([](AstCompare& c) {
 				c.name_expr("null");
 			});
-			c.return_expr([&] {
-				c.binary_expr(cero::BinaryOperator::Div, [&] {
+			c.return_expr([](AstCompare& c) {
+				c.binary_expr(cero::BinaryOperator::Div, [](AstCompare& c) {
 					c.name_expr("a");
 					c.name_expr("b");
 				});

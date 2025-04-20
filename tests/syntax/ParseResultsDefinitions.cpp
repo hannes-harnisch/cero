@@ -18,7 +18,7 @@ main() {
 
 	AstCompare c(ast);
 	c.root();
-	c.function_definition(cero::AccessSpecifier::None, "main", [] {});
+	c.function_definition(cero::AccessSpecifier::None, "main", [](AstCompare&) {});
 
 	c.compare();
 }

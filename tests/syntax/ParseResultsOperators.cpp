@@ -22,35 +22,35 @@ foo(int32 a, int32 b) -> int32 {
 
 	AstCompare c(ast);
 	c.root();
-	c.function_definition(cero::AccessSpecifier::None, "foo", [&] {
-		c.function_parameter(cero::ParameterSpecifier::None, "a", [&] {
+	c.function_definition(cero::AccessSpecifier::None, "foo", [](AstCompare& c) {
+		c.function_parameter(cero::ParameterSpecifier::None, "a", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_parameter(cero::ParameterSpecifier::None, "b", [&] {
+		c.function_parameter(cero::ParameterSpecifier::None, "b", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_output("", [&] {
+		c.function_output("", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.binding_statement(cero::BindingSpecifier::Let, "c", [&] {
-			c.binary_expr(cero::BinaryOperator::Add, [&] {
+		c.binding_statement(cero::BindingSpecifier::Let, "c", [](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::Add, [](AstCompare& c) {
 				c.name_expr("a");
 				c.name_expr("b");
 			});
 		});
-		c.binding_statement(cero::BindingSpecifier::Let, "d", [&] {
-			c.binary_expr(cero::BinaryOperator::Add, [&] {
+		c.binding_statement(cero::BindingSpecifier::Let, "d", [](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::Add, [](AstCompare& c) {
 				c.name_expr("a");
-				c.binary_expr(cero::BinaryOperator::Mul, [&] {
+				c.binary_expr(cero::BinaryOperator::Mul, [](AstCompare& c) {
 					c.name_expr("b");
 					c.name_expr("c");
 				});
 			});
 		});
-		c.binding_statement(cero::BindingSpecifier::Let, "e", [&] {
-			c.binary_expr(cero::BinaryOperator::Div, [&] {
-				c.group_expr([&] {
-					c.binary_expr(cero::BinaryOperator::Sub, [&] {
+		c.binding_statement(cero::BindingSpecifier::Let, "e", [](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::Div, [](AstCompare& c) {
+				c.group_expr([](AstCompare& c) {
+					c.binary_expr(cero::BinaryOperator::Sub, [](AstCompare& c) {
 						c.name_expr("d");
 						c.name_expr("a");
 					});
@@ -58,9 +58,9 @@ foo(int32 a, int32 b) -> int32 {
 				c.name_expr("c");
 			});
 		});
-		c.return_expr([&] {
-			c.binary_expr(cero::BinaryOperator::Mul, [&] {
-				c.binary_expr(cero::BinaryOperator::Pow, [&] {
+		c.return_expr([](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::Mul, [](AstCompare& c) {
+				c.binary_expr(cero::BinaryOperator::Pow, [](AstCompare& c) {
 					c.name_expr("e");
 					c.numeric_literal_expr(cero::NumericLiteralKind::Decimal);
 				});
@@ -91,97 +91,97 @@ bar(int32 a, int32 b, int32 c) -> bool {
 
 	AstCompare c(ast);
 	c.root();
-	c.function_definition(cero::AccessSpecifier::None, "bar", [&] {
-		c.function_parameter(cero::ParameterSpecifier::None, "a", [&] {
+	c.function_definition(cero::AccessSpecifier::None, "bar", [](AstCompare& c) {
+		c.function_parameter(cero::ParameterSpecifier::None, "a", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_parameter(cero::ParameterSpecifier::None, "b", [&] {
+		c.function_parameter(cero::ParameterSpecifier::None, "b", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_parameter(cero::ParameterSpecifier::None, "c", [&] {
+		c.function_parameter(cero::ParameterSpecifier::None, "c", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_output("", [&] {
+		c.function_output("", [](AstCompare& c) {
 			c.name_expr("bool");
 		});
-		c.binding_statement(cero::BindingSpecifier::Let, "u", [&] {
-			c.binary_expr(cero::BinaryOperator::Eq, [&] {
-				c.binary_expr(cero::BinaryOperator::Sub, [&] {
+		c.binding_statement(cero::BindingSpecifier::Let, "u", [](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::Eq, [](AstCompare& c) {
+				c.binary_expr(cero::BinaryOperator::Sub, [](AstCompare& c) {
 					c.name_expr("a");
 					c.name_expr("b");
 				});
-				c.binary_expr(cero::BinaryOperator::Add, [&] {
+				c.binary_expr(cero::BinaryOperator::Add, [](AstCompare& c) {
 					c.name_expr("b");
 					c.name_expr("c");
 				});
 			});
 		});
-		c.binding_statement(cero::BindingSpecifier::Let, "v", [&] {
-			c.binary_expr(cero::BinaryOperator::NotEq, [&] {
-				c.binary_expr(cero::BinaryOperator::Mul, [&] {
+		c.binding_statement(cero::BindingSpecifier::Let, "v", [](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::NotEq, [](AstCompare& c) {
+				c.binary_expr(cero::BinaryOperator::Mul, [](AstCompare& c) {
 					c.name_expr("b");
 					c.name_expr("a");
 				});
-				c.binary_expr(cero::BinaryOperator::Div, [&] {
+				c.binary_expr(cero::BinaryOperator::Div, [](AstCompare& c) {
 					c.name_expr("c");
 					c.name_expr("a");
 				});
 			});
 		});
-		c.binding_statement(cero::BindingSpecifier::Let, "w", [&] {
-			c.binary_expr(cero::BinaryOperator::Greater, [&] {
-				c.binary_expr(cero::BinaryOperator::Add, [&] {
+		c.binding_statement(cero::BindingSpecifier::Let, "w", [](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::Greater, [](AstCompare& c) {
+				c.binary_expr(cero::BinaryOperator::Add, [](AstCompare& c) {
 					c.name_expr("c");
 					c.name_expr("b");
 				});
-				c.binary_expr(cero::BinaryOperator::Mul, [&] {
+				c.binary_expr(cero::BinaryOperator::Mul, [](AstCompare& c) {
 					c.name_expr("b");
 					c.name_expr("a");
 				});
 			});
 		});
-		c.binding_statement(cero::BindingSpecifier::Let, "x", [&] {
-			c.binary_expr(cero::BinaryOperator::Less, [&] {
-				c.binary_expr(cero::BinaryOperator::Div, [&] {
+		c.binding_statement(cero::BindingSpecifier::Let, "x", [](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::Less, [](AstCompare& c) {
+				c.binary_expr(cero::BinaryOperator::Div, [](AstCompare& c) {
 					c.name_expr("b");
 					c.name_expr("a");
 				});
-				c.binary_expr(cero::BinaryOperator::Sub, [&] {
+				c.binary_expr(cero::BinaryOperator::Sub, [](AstCompare& c) {
 					c.name_expr("c");
 					c.name_expr("b");
 				});
 			});
 		});
-		c.binding_statement(cero::BindingSpecifier::Let, "y", [&] {
-			c.binary_expr(cero::BinaryOperator::LessEq, [&] {
-				c.binary_expr(cero::BinaryOperator::Mul, [&] {
+		c.binding_statement(cero::BindingSpecifier::Let, "y", [](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::LessEq, [](AstCompare& c) {
+				c.binary_expr(cero::BinaryOperator::Mul, [](AstCompare& c) {
 					c.name_expr("a");
 					c.name_expr("c");
 				});
-				c.binary_expr(cero::BinaryOperator::Sub, [&] {
+				c.binary_expr(cero::BinaryOperator::Sub, [](AstCompare& c) {
 					c.name_expr("b");
 					c.name_expr("a");
 				});
 			});
 		});
-		c.binding_statement(cero::BindingSpecifier::Let, "z", [&] {
-			c.binary_expr(cero::BinaryOperator::GreaterEq, [&] {
-				c.binary_expr(cero::BinaryOperator::Add, [&] {
+		c.binding_statement(cero::BindingSpecifier::Let, "z", [](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::GreaterEq, [](AstCompare& c) {
+				c.binary_expr(cero::BinaryOperator::Add, [](AstCompare& c) {
 					c.name_expr("b");
 					c.name_expr("c");
 				});
-				c.binary_expr(cero::BinaryOperator::Div, [&] {
+				c.binary_expr(cero::BinaryOperator::Div, [](AstCompare& c) {
 					c.name_expr("a");
 					c.name_expr("c");
 				});
 			});
 		});
-		c.return_expr([&] {
-			c.binary_expr(cero::BinaryOperator::LogicOr, [&] {
-				c.binary_expr(cero::BinaryOperator::LogicOr, [&] {
-					c.binary_expr(cero::BinaryOperator::LogicOr, [&] {
-						c.binary_expr(cero::BinaryOperator::LogicOr, [&] {
-							c.binary_expr(cero::BinaryOperator::LogicOr, [&] {
+		c.return_expr([](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::LogicOr, [](AstCompare& c) {
+				c.binary_expr(cero::BinaryOperator::LogicOr, [](AstCompare& c) {
+					c.binary_expr(cero::BinaryOperator::LogicOr, [](AstCompare& c) {
+						c.binary_expr(cero::BinaryOperator::LogicOr, [](AstCompare& c) {
+							c.binary_expr(cero::BinaryOperator::LogicOr, [](AstCompare& c) {
 								c.name_expr("u");
 								c.name_expr("v");
 							});
@@ -212,53 +212,53 @@ baz(int32 a, int32 b, int32 c, int32 d) -> bool {
 
 	AstCompare c(ast);
 	c.root();
-	c.function_definition(cero::AccessSpecifier::None, "baz", [&] {
-		c.function_parameter(cero::ParameterSpecifier::None, "a", [&] {
+	c.function_definition(cero::AccessSpecifier::None, "baz", [](AstCompare& c) {
+		c.function_parameter(cero::ParameterSpecifier::None, "a", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_parameter(cero::ParameterSpecifier::None, "b", [&] {
+		c.function_parameter(cero::ParameterSpecifier::None, "b", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_parameter(cero::ParameterSpecifier::None, "c", [&] {
+		c.function_parameter(cero::ParameterSpecifier::None, "c", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_parameter(cero::ParameterSpecifier::None, "d", [&] {
+		c.function_parameter(cero::ParameterSpecifier::None, "d", [](AstCompare& c) {
 			c.name_expr("int32");
 		});
-		c.function_output("", [&] {
+		c.function_output("", [](AstCompare& c) {
 			c.name_expr("bool");
 		});
-		c.return_expr([&] {
-			c.binary_expr(cero::BinaryOperator::LogicAnd, [&] {
-				c.binary_expr(cero::BinaryOperator::LogicAnd, [&] {
-					c.binary_expr(cero::BinaryOperator::LogicAnd, [&] {
-						c.binary_expr(cero::BinaryOperator::Eq, [&] {
-							c.binary_expr(cero::BinaryOperator::Add, [&] {
+		c.return_expr([](AstCompare& c) {
+			c.binary_expr(cero::BinaryOperator::LogicAnd, [](AstCompare& c) {
+				c.binary_expr(cero::BinaryOperator::LogicAnd, [](AstCompare& c) {
+					c.binary_expr(cero::BinaryOperator::LogicAnd, [](AstCompare& c) {
+						c.binary_expr(cero::BinaryOperator::Eq, [](AstCompare& c) {
+							c.binary_expr(cero::BinaryOperator::Add, [](AstCompare& c) {
 								c.name_expr("a");
 								c.name_expr("b");
 							});
-							c.binary_expr(cero::BinaryOperator::Add, [&] {
+							c.binary_expr(cero::BinaryOperator::Add, [](AstCompare& c) {
 								c.name_expr("b");
 								c.name_expr("c");
 							});
 						});
-						c.binary_expr(cero::BinaryOperator::NotEq, [&] {
-							c.binary_expr(cero::BinaryOperator::Add, [&] {
+						c.binary_expr(cero::BinaryOperator::NotEq, [](AstCompare& c) {
+							c.binary_expr(cero::BinaryOperator::Add, [](AstCompare& c) {
 								c.name_expr("b");
 								c.name_expr("c");
 							});
-							c.binary_expr(cero::BinaryOperator::Add, [&] {
+							c.binary_expr(cero::BinaryOperator::Add, [](AstCompare& c) {
 								c.name_expr("c");
 								c.name_expr("d");
 							});
 						});
 					});
-					c.binary_expr(cero::BinaryOperator::Less, [&] {
+					c.binary_expr(cero::BinaryOperator::Less, [](AstCompare& c) {
 						c.name_expr("a");
 						c.name_expr("c");
 					});
 				});
-				c.binary_expr(cero::BinaryOperator::Greater, [&] {
+				c.binary_expr(cero::BinaryOperator::Greater, [](AstCompare& c) {
 					c.name_expr("a");
 					c.name_expr("d");
 				});

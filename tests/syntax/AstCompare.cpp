@@ -408,7 +408,7 @@ void AstCompare::record(cero::AstNodeKind type) {
 
 void AstCompare::record_children(ChildScope child_scope) {
 	++current_level_;
-	child_scope();
+	child_scope(*this);
 	--current_level_;
 }
 

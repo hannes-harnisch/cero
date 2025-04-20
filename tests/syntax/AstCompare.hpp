@@ -2,7 +2,6 @@
 
 #include <cero/syntax/AstCursor.hpp>
 #include <cero/syntax/AstVisitor.hpp>
-#include <cero/util/FunctionRef.hpp>
 
 #include <any>
 #include <queue>
@@ -11,7 +10,7 @@ namespace tests {
 
 class AstCompare : public cero::AstVisitor {
 public:
-	using ChildScope = cero::FunctionRef<void()>;
+	using ChildScope = void (*)(AstCompare&);
 
 	AstCompare(const cero::Ast& ast);
 	~AstCompare() override;
