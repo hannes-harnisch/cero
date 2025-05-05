@@ -1,13 +1,8 @@
 #pragma once
 
-#include "cero/io/Source.hpp"
 #include "cero/syntax/AstNode.hpp"
-#include "cero/syntax/AstVisitor.hpp"
+#include "cero/syntax/Source.hpp"
 #include "cero/syntax/TokenStream.hpp"
-
-#include <span>
-#include <string>
-#include <vector>
 
 namespace cero {
 
@@ -25,7 +20,7 @@ public:
 	std::span<const AstNode> raw() const;
 
 	/// Creates a tree-like string representation of the AST.
-	std::string to_string(const SourceGuard& source) const;
+	std::string to_string(const SourceGuard& source, uint8_t tab_size) const;
 
 private:
 	std::vector<AstNode> nodes_;

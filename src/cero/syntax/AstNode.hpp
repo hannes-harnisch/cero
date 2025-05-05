@@ -1,9 +1,8 @@
 #pragma once
 
-#include "cero/io/Source.hpp"
 #include "cero/syntax/AstNodeKind.hpp"
 #include "cero/syntax/AstVisitor.hpp"
-#include "cero/util/Macros.hpp"
+#include "cero/util/Assert.hpp"
 #include "cero/util/Traits.hpp"
 
 namespace cero {
@@ -25,7 +24,7 @@ public:
 			CERO_AST_NODE_KINDS
 #undef CERO_AST_NODE_KIND
 		}
-		fail_unreachable();
+		assert_unreachable();
 	}
 
 	void visit(AstVisitor& visitor) const {
@@ -43,8 +42,9 @@ public:
 	if constexpr (std::is_same_v<T, Ast##X>) {                                                                                 \
 		if (Root_.header.kind == AstNodeKind::X) return X##_;                                                                  \
                                                                                                                                \
-		fail_check("node does not hold expected type");                                                                        \
+		assert_fail("node does not hold expected type");                                                                       \
 	} else
+
 		CERO_AST_NODE_KINDS
 #undef CERO_AST_NODE_KIND
 		{
@@ -58,7 +58,7 @@ public:
 	if constexpr (std::is_same_v<T, Ast##X>) {                                                                                 \
 		if (Root_.header.kind == AstNodeKind::X) return X##_;                                                                  \
                                                                                                                                \
-		fail_check("node does not hold expected type");                                                                        \
+		assert_fail("node does not hold expected type");                                                                       \
 	} else
 		CERO_AST_NODE_KINDS
 #undef CERO_AST_NODE_KIND

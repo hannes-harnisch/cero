@@ -1,10 +1,6 @@
 #pragma once
 
-#include "cero/io/Source.hpp"
-
-#include <cstdint>
-#include <string>
-#include <string_view>
+#include "cero/syntax/Source.hpp"
 
 namespace cero {
 
@@ -117,7 +113,7 @@ struct Token {
 	TokenKind kind : 8 = {};
 	SourceOffset offset : SourceOffsetBits = 0;
 
-	CodeLocation locate_in(const SourceGuard& source) const;
+	CodeLocation locate_in(const SourceGuard& source, uint8_t tab_size) const;
 };
 
 static_assert(sizeof(Token) == 4);

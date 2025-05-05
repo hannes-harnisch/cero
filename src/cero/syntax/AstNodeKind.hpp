@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cero/io/Source.hpp"
+#include "cero/syntax/Source.hpp"
 
 namespace cero {
 
@@ -55,8 +55,8 @@ struct AstNodeHeader {
 		offset(source_offset & 0x00ffffffu) {
 	}
 
-	CodeLocation locate_in(const SourceGuard& source) const {
-		return source.locate(offset);
+	CodeLocation locate_in(const SourceGuard& source, uint8_t tab_size) const {
+		return source.locate(offset, tab_size);
 	}
 };
 

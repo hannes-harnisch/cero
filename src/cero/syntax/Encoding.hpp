@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 namespace cero {
 
 inline bool is_dec_digit(char c) {

@@ -1,7 +1,7 @@
 #include "common/ExhaustiveReporter.hpp"
 #include "common/Test.hpp"
 
-#include <cero/syntax/Parse.hpp>
+#include <cero/syntax/Parser.hpp>
 
 namespace tests {
 
@@ -14,10 +14,10 @@ main() {
 )_____");
 
 	ExhaustiveReporter r;
-	auto ast = cero::parse(source, r);
+	auto ast = cero::run_parser_on_source(source, r, TabSize);
 	CHECK(!ast.has_errors());
 
-	auto str = ast.to_string(source);
+	auto str = ast.to_string(source, TabSize);
 	auto expected = R"_____(AST for AstStringForEmptyFunction (2 nodes)
 └── function `main` [3:1]
     ├── parameters
@@ -36,10 +36,10 @@ a(int32 x, bool _a, bool _b = x) -> float32 {
 )_____");
 
 	ExhaustiveReporter r;
-	auto ast = cero::parse(source, r);
+	auto ast = cero::run_parser_on_source(source, r, TabSize);
 	CHECK(!ast.has_errors());
 
-	auto str = ast.to_string(source);
+	auto str = ast.to_string(source, TabSize);
 	auto expected = R"_____(AST for AstStringForSimpleFunctionWithParametersAndReturn (11 nodes)
 └── function `a` [3:1]
     ├── parameters
@@ -71,10 +71,10 @@ b(int32 i, float64 f) {
 )_____");
 
 	ExhaustiveReporter r;
-	auto ast = cero::parse(source, r);
+	auto ast = cero::run_parser_on_source(source, r, TabSize);
 	CHECK(!ast.has_errors());
 
-	auto str = ast.to_string(source);
+	auto str = ast.to_string(source, TabSize);
 	auto expected = R"_____(AST for AstStringForCall (20 nodes)
 ├── function `a` [3:1]
 │   ├── parameters
@@ -123,10 +123,10 @@ fibonacci(var uint32 n) -> uint32 {
 )_____");
 
 	ExhaustiveReporter r;
-	auto ast = cero::parse(source, r);
+	auto ast = cero::run_parser_on_source(source, r, TabSize);
 	CHECK(!ast.has_errors());
 
-	auto str = ast.to_string(source);
+	auto str = ast.to_string(source, TabSize);
 	auto expected = R"_____(AST for AstStringForFibonacci (27 nodes)
 └── function `fibonacci` [2:1]
     ├── parameters

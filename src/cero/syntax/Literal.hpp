@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string_view>
-
 namespace cero {
 
 void evaluate_dec_int_literal(std::string_view lexeme);

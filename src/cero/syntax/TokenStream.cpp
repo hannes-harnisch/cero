@@ -16,7 +16,7 @@ std::span<const Token> TokenStream::raw() const {
 	return {stream_};
 }
 
-std::string TokenStream::to_string(const SourceGuard& source) const {
+std::string TokenStream::to_string(const SourceGuard& source, uint8_t tab_size) const {
 	auto num_tokens = stream_.size();
 	auto str = fmt::format("Token stream for {} ({} token{})\n", source.get_name(), num_tokens, num_tokens == 1 ? "" : "s");
 
@@ -29,7 +29,7 @@ std::string TokenStream::to_string(const SourceGuard& source) const {
 
 		// This loop is technically quadratic since SourceGuard::locate will linearly search the source for the code location
 		// every time, but it really doesn't matter.
-		auto location_str = token.locate_in(source).to_short_string();
+		auto location_str = token.locate_in(source, tab_size).to_short_string();
 
 		str += fmt::format("\t{} `{}` {}\n", kind_str, lexeme, location_str);
 		if (token.kind == TokenKind::EndOfFile) {

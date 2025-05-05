@@ -2,8 +2,6 @@
 
 #include "cero/syntax/Ast.hpp"
 
-#include <span>
-
 namespace cero {
 
 /// Utility for traversing an AST. Its methods are reentrant, meaning you can call a visit method recursively while a visit

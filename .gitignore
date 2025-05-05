@@ -1,6 +1,4 @@
-/.cmake/
-/.idea/
-/.vs/
+/.*/
 /build/
 /CMakeFiles/
 /cmake-build-*
@@ -8,3 +6,6 @@
 
 CMakeCache.txt
 CMakeUserPresets.json
+
+*.sln
+*.vcxproj

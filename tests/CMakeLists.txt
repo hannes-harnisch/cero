@@ -1,11 +1,14 @@
-file(GLOB_RECURSE CERO_TESTS_SRC CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/tests/*")
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS *)
+list(FILTER sources INCLUDE REGEX ${source_filter_regex})
 
-add_executable(CeroTests ${CERO_TESTS_SRC})
+add_executable(cero_tests ${sources})
 
-target_link_libraries(CeroTests PRIVATE Cero doctest::doctest)
+target_precompile_headers(cero_tests REUSE_FROM cero)
+target_include_directories(cero_tests PRIVATE .)
 
-target_include_directories(CeroTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(CeroTests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+find_package(doctest REQUIRED)
 
-set_target_properties(CeroTests PROPERTIES
-        PRECOMPILE_HEADERS ${CMAKE_SOURCE_DIR}/src/PrecompiledHeader.hpp)
+target_link_libraries(cero_tests PRIVATE
+        cero
+        doctest::doctest
+)

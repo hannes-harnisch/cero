@@ -12,7 +12,7 @@ class AstCompare : public cero::AstVisitor {
 public:
 	using ChildScope = void (*)(AstCompare&);
 
-	AstCompare(const cero::Ast& ast);
+	explicit AstCompare(const cero::Ast& ast);
 	~AstCompare() override;
 
 	// Perform the comparison.
@@ -83,7 +83,7 @@ private:
 
 	void expect(cero::AstNodeKind type);
 	void record(cero::AstNodeKind type);
-	void record_children(ChildScope cs);
+	void record_children(ChildScope child_scope);
 
 	template<typename T>
 	T pop();

@@ -1,7 +1,7 @@
 #include "common/ExhaustiveReporter.hpp"
 #include "common/Test.hpp"
 
-#include <cero/syntax/Lex.hpp>
+#include <cero/syntax/Lexer.hpp>
 
 namespace tests {
 
@@ -16,9 +16,9 @@ foo "bar" 'baz' 123 456;
 )_____");
 
 	ExhaustiveReporter r;
-	auto tokens = cero::lex(source, r, true);
+	auto tokens = cero::run_lexer(source, r, true, TabSize);
 	CHECK(!tokens.has_errors());
-	auto str = tokens.to_string(source);
+	auto str = tokens.to_string(source, TabSize);
 
 	CHECK_EQ(str, R"_____(Token stream for TokenStringForBracketsLiterals (21 tokens)
 	LParen `(` [2:1]
@@ -52,9 +52,9 @@ CERO_TEST(TokenStringForOperators) {
 )_____");
 
 	ExhaustiveReporter r;
-	auto tokens = cero::lex(source, r, true);
+	auto tokens = cero::run_lexer(source, r, true, TabSize);
 	CHECK(!tokens.has_errors());
-	auto str = tokens.to_string(source);
+	auto str = tokens.to_string(source, TabSize);
 
 	CHECK_EQ(str, R"_____(Token stream for TokenStringForOperators (16 tokens)
 	Plus `+` [2:1]
@@ -89,9 +89,9 @@ struct S {
 )_____");
 
 	ExhaustiveReporter r;
-	auto tokens = cero::lex(source, r, true);
+	auto tokens = cero::run_lexer(source, r, true, TabSize);
 	CHECK(!tokens.has_errors());
-	auto str = tokens.to_string(source);
+	auto str = tokens.to_string(source, TabSize);
 
 	CHECK_EQ(str, R"_____(Token stream for TokenStringForKeywords (19 tokens)
 	Struct `struct` [2:1]

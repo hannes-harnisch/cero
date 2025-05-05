@@ -14,17 +14,17 @@ public:
 	}
 
 	/// Returns the current token.
-	Token peek() const {
+	Token peek() {
 		return *it_;
 	}
 
 	/// Returns the current token kind.
-	TokenKind peek_kind() const {
+	TokenKind peek_kind() {
 		return it_->kind;
 	}
 
 	/// Returns the current token offset.
-	SourceOffset peek_offset() const {
+	SourceOffset peek_offset() {
 		return it_->offset;
 	}
 

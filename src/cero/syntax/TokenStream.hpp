@@ -2,10 +2,6 @@
 
 #include "cero/syntax/Token.hpp"
 
-#include <span>
-#include <string>
-#include <vector>
-
 namespace cero {
 
 class TokenStream {
@@ -20,7 +16,7 @@ public:
 	std::span<const Token> raw() const;
 
 	/// Creates a list-like string representation of the token stream.
-	std::string to_string(const SourceGuard& source) const;
+	std::string to_string(const SourceGuard& source, uint8_t tab_size) const;
 
 private:
 	std::vector<Token> stream_;

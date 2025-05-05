@@ -1,9 +1,6 @@
 #pragma once
 
-#include "cero/io/Source.hpp"
-
-#include <optional>
-#include <string_view>
+#include "cero/syntax/Source.hpp"
 
 namespace cero {
 

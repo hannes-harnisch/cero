@@ -1,23 +1,18 @@
-file(GLOB_RECURSE CERO_SRC CONFIGURE_DEPENDS "cero/*.cpp")
-list(FILTER CERO_SRC EXCLUDE REGEX ".+\\..+\\.cpp")
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS *)
+list(FILTER sources INCLUDE REGEX ${source_filter_regex})
 
-if (WIN32)
-    file(GLOB_RECURSE CERO_WINDOWS_SRC CONFIGURE_DEPENDS "*.win.cpp")
-    list(APPEND CERO_SRC ${CERO_WINDOWS_SRC})
-elseif (UNIX)
-    file(GLOB_RECURSE CERO_UNIX_SRC CONFIGURE_DEPENDS "*.unix.cpp")
-    list(APPEND CERO_SRC ${CERO_UNIX_SRC})
-endif ()
+add_library(cero STATIC ${sources})
+target_precompile_headers(cero PUBLIC Pch.hpp)
+target_include_directories(cero PUBLIC .)
 
-add_library(Cero ${CERO_SRC})
-target_include_directories(Cero PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(Cero PUBLIC fmt::fmt)
+find_package(cxxopts REQUIRED)
+find_package(fmt CONFIG REQUIRED)
 
-set_target_properties(Cero PROPERTIES
-        PRECOMPILE_HEADERS PrecompiledHeader.hpp)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(gmp REQUIRED IMPORTED_TARGET gmp)
 
-add_executable(CeroCompiler "Main.cpp")
-target_link_libraries(CeroCompiler PRIVATE Cero)
-
-set_target_properties(CeroCompiler PROPERTIES
-        PRECOMPILE_HEADERS PrecompiledHeader.hpp)
+target_link_libraries(cero PUBLIC
+        cxxopts::cxxopts
+        fmt::fmt
+        PkgConfig::gmp
+)

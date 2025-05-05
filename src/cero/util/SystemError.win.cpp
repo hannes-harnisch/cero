@@ -1,6 +1,6 @@
 #include "SystemError.hpp"
 
-#include "cero/util/WinApi.win.hpp"
+#include "cero/util/WindowsApi.hpp"
 
 std::error_condition cero::get_last_system_error() {
 	const DWORD last_error = ::GetLastError();

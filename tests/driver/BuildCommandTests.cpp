@@ -8,15 +8,14 @@ namespace tests {
 CERO_TEST(FileNotFoundForBuildCommand) {
 	ExhaustiveReporter r;
 	r.set_source_name("FileShouldNotExist.ce");
-	r.expect(0, 0, cero::Message::FileNotFound, {});
+	r.expect(0, 0, cero::Message::FileNotFound, cero::MessageArgs());
 
-	cero::Configuration config;
-	auto source = cero::Source::from_file("FileShouldNotExist.ce", config);
-	cero::build_source(source, config, r);
+	auto source = cero::Source::from_file("FileShouldNotExist.ce");
+	cero::try_build_source(source, r, {});
 }
 
 CERO_TEST(CouldNotOpenFileForBuildCommand) {
-#if CERO_WINDOWS
+#if CERO_SYSTEM_WINDOWS
 	constexpr auto err_code = std::errc::permission_denied;
 #else
 	constexpr auto err_code = std::errc::no_such_device;
@@ -27,9 +26,8 @@ CERO_TEST(CouldNotOpenFileForBuildCommand) {
 	r.set_source_name(".");
 	r.expect(0, 0, cero::Message::CouldNotOpenFile, cero::MessageArgs(err_msg));
 
-	cero::Configuration config;
-	auto source = cero::Source::from_file(".", config);
-	cero::build_source(source, config, r);
+	auto source = cero::Source::from_file(".");
+	cero::try_build_source(source, r, {});
 }
 
 } // namespace tests

@@ -1,44 +1,27 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.29)
+project(cero)
 
-if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-    message(FATAL_ERROR "In-source builds are not recommended. Consider re-running CMake with `-B build` instead.")
-endif ()
-
-project(Cero)
-
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD_LIBRARIES "")
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
-set(CMAKE_VS_JUST_MY_CODE_DEBUGGING ON)
-
-include(FetchContent)
-
-message("Fetching dependency: fmtlib")
-FetchContent_Declare(fmt
-        GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-        GIT_TAG 7c50da5385cb9e67e9be37544caa1649fd466dae
-)
-FetchContent_MakeAvailable(fmt)
-
-message("Fetching dependency: doctest")
-FetchContent_Declare(doctest
-        GIT_REPOSITORY https://github.com/doctest/doctest.git
-        GIT_TAG v2.4.11
-)
-FetchContent_MakeAvailable(doctest)
 
 if (WIN32)
-    add_compile_definitions(CERO_WINDOWS)
+    set(system_extension win)
+    add_compile_definitions(CERO_SYSTEM_WINDOWS)
 elseif (UNIX)
-    add_compile_definitions(CERO_UNIX)
+    set(system_extension posix)
+    add_compile_definitions(CERO_SYSTEM_POSIX)
 endif ()
 
-if (MSVC)
-    add_compile_options(/W4)
-else ()
-    add_compile_options(-Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion)
+set(source_filter_regex .+/[^.]+\\.cpp|.+\\.${system_extension}\\.cpp)
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    add_compile_definitions(CERO_COMPILER_MSVC)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_compile_definitions(CERO_COMPILER_CLANG)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_definitions(CERO_COMPILER_GCC)
 endif ()
 
 add_subdirectory(src)

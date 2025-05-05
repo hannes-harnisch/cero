@@ -16,8 +16,8 @@ std::span<const AstNode> Ast::raw() const {
 	return {nodes_};
 }
 
-std::string Ast::to_string(const SourceGuard& source) const {
-	return AstToString(*this, source).make_string();
+std::string Ast::to_string(const SourceGuard& source, uint8_t tab_size) const {
+	return ast_to_string(*this, source, tab_size);
 }
 
 Ast::Ast(const TokenStream& token_stream) {

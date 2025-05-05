@@ -1,12 +1,8 @@
 #pragma once
 
-#include <cero/io/CodeLocation.hpp>
-#include <cero/io/Message.hpp>
-#include <cero/io/Reporter.hpp>
-
-#include <queue>
-#include <string>
-#include <string_view>
+#include <cero/report/CodeLocation.hpp>
+#include <cero/report/Message.hpp>
+#include <cero/report/Reporter.hpp>
 
 namespace tests {
 
@@ -18,6 +14,8 @@ public:
 
 	/// Checks whether all expected reports were seen.
 	~ExhaustiveReporter() override;
+
+	bool has_errors() const override;
 
 	/// Marks a report as expected with the currently set source name, given line, column, message kind and arguments. Instead
 	/// of expecting specific strings, this way allows decoupling the tests from the exact text of a diagnostic message.
@@ -39,8 +37,9 @@ private:
 
 	std::queue<Report> expected_reports_;
 	std::string_view source_name_;
+	bool has_errors_ = false;
 
-	void handle_report(cero::MessageLevel message_level, cero::CodeLocation location, std::string message_text) override;
+	void handle_report(cero::CodeLocation location, cero::MessageLevel message_level, std::string message_text) override;
 };
 
 } // namespace tests

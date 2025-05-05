@@ -1,15 +1,15 @@
 #pragma once
 
-#include "cero/io/Configuration.hpp"
-#include "cero/io/Reporter.hpp"
-#include "cero/io/Source.hpp"
+#include "cero/driver/CompilerOptions.hpp"
+#include "cero/report/Reporter.hpp"
+#include "cero/syntax/Source.hpp"
 
 namespace cero {
 
-/// Perform a build with the given configuration.
-bool run_build_command(const Configuration& config);
+/// Perform a build with the given options.
+bool run_build_command(const CompilerOptions& options);
 
-/// Build a single source input with the given configuration and reporter.
-void build_source(const Source& source, const Configuration& config, Reporter& reporter);
+/// Build a single source input with the given reporter and options.
+void try_build_source(const Source& source, Reporter& reporter, const CompilerOptions& options);
 
 } // namespace cero
