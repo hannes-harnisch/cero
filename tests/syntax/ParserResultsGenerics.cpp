@@ -38,7 +38,6 @@ f() -> List<List<List<int32>>> {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "a", [](AstCompare& c) {
 		c.function_output("", [](AstCompare& c) {
 			c.generic_name_expr("List", [](AstCompare& c) {
@@ -119,8 +118,6 @@ f() -> List<List<List<int32>>> {
 			c.group_expr([](AstCompare&) {});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseLessAndRightShift) {
@@ -139,7 +136,6 @@ oog(int32 a, int32 b, int32 c) -> bool {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "oof", [](AstCompare& c) {
 		c.function_parameter(cero::ParameterSpecifier::None, "a", [](AstCompare& c) {
 			c.name_expr("int32");
@@ -188,8 +184,6 @@ oog(int32 a, int32 b, int32 c) -> bool {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseAmbiguousGenericCallVsComparisonArguments) {
@@ -204,7 +198,6 @@ ouch(float32 e) -> float64 {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "ouch", [](AstCompare& c) {
 		c.function_parameter(cero::ParameterSpecifier::None, "e", [](AstCompare& c) {
 			c.name_expr("float32");
@@ -225,8 +218,6 @@ ouch(float32 e) -> float64 {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseComparisonArgumentsVsGenericPattern) {
@@ -241,7 +232,6 @@ ouch(float32 e) -> float64 {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "ouch", [](AstCompare& c) {
 		c.function_parameter(cero::ParameterSpecifier::None, "e", [](AstCompare& c) {
 			c.name_expr("float32");
@@ -263,8 +253,6 @@ ouch(float32 e) -> float64 {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseComparisonAndRightShiftAsGenericArgument) {
@@ -283,7 +271,6 @@ meow() -> A<(D >> E)> {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "woof", [](AstCompare& c) {
 		c.function_output("", [](AstCompare& c) {
 			c.generic_name_expr("A", [](AstCompare& c) {
@@ -314,8 +301,6 @@ meow() -> A<(D >> E)> {
 			c.group_expr([](AstCompare&) {});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseGenericParameters) {
@@ -335,7 +320,6 @@ moo(List<int32> _a,
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "moo", [](AstCompare& c) {
 		c.function_parameter(cero::ParameterSpecifier::None, "_a", [](AstCompare& c) {
 			c.generic_name_expr("List", [](AstCompare& c) {
@@ -393,8 +377,6 @@ moo(List<int32> _a,
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseVariableWithGenericType) {
@@ -415,7 +397,6 @@ bark() {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "bark", [](AstCompare& c) {
 		c.binding_statement(cero::BindingSpecifier::Let, "_a", [](AstCompare& c) {
 			c.generic_name_expr("List", [](AstCompare& c) {
@@ -480,8 +461,6 @@ bark() {
 			c.group_expr([](AstCompare&) {});
 		});
 	});
-
-	c.compare();
 }
 
 } // namespace tests

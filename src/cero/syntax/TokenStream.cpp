@@ -12,7 +12,7 @@ bool TokenStream::has_errors() const {
 	return has_errors_;
 }
 
-std::span<const Token> TokenStream::raw() const {
+std::span<const Token> TokenStream::array() const {
 	return {stream_};
 }
 

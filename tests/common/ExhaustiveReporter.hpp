@@ -12,6 +12,8 @@ public:
 	/// Creates a new exhaustive reporter where the current test name is the source name for reports.
 	ExhaustiveReporter();
 
+	ExhaustiveReporter(ExhaustiveReporter&&) = delete;
+
 	/// Checks whether all expected reports were seen.
 	~ExhaustiveReporter() override;
 
@@ -23,9 +25,6 @@ public:
 
 	/// Sets the current source name used for expected reports.
 	void set_source_name(std::string_view source_name);
-
-	ExhaustiveReporter(ExhaustiveReporter&&) = delete;
-	ExhaustiveReporter& operator=(ExhaustiveReporter&&) = delete;
 
 private:
 	struct Report {

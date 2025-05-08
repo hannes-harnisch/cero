@@ -21,7 +21,6 @@ foo(int32 a, int32 b) -> int32 {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "foo", [](AstCompare& c) {
 		c.function_parameter(cero::ParameterSpecifier::None, "a", [](AstCompare& c) {
 			c.name_expr("int32");
@@ -68,8 +67,6 @@ foo(int32 a, int32 b) -> int32 {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseAdditiveAndComparisonOperators) {
@@ -90,7 +87,6 @@ bar(int32 a, int32 b, int32 c) -> bool {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "bar", [](AstCompare& c) {
 		c.function_parameter(cero::ParameterSpecifier::None, "a", [](AstCompare& c) {
 			c.name_expr("int32");
@@ -195,8 +191,6 @@ bar(int32 a, int32 b, int32 c) -> bool {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseComparisonAndLogicalOperators) {
@@ -211,7 +205,6 @@ baz(int32 a, int32 b, int32 c, int32 d) -> bool {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "baz", [](AstCompare& c) {
 		c.function_parameter(cero::ParameterSpecifier::None, "a", [](AstCompare& c) {
 			c.name_expr("int32");
@@ -265,8 +258,6 @@ baz(int32 a, int32 b, int32 c, int32 d) -> bool {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 } // namespace tests

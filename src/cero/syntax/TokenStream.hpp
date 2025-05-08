@@ -13,7 +13,7 @@ public:
 	bool has_errors() const;
 
 	/// Get a view of the underlying array of tokens.
-	std::span<const Token> raw() const;
+	std::span<const Token> array() const;
 
 	/// Creates a list-like string representation of the token stream.
 	std::string to_string(const SourceGuard& source, uint8_t tab_size) const;

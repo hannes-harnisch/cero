@@ -3,8 +3,7 @@
 #include <cero/syntax/AstCursor.hpp>
 #include <cero/syntax/AstVisitor.hpp>
 
-#include <any>
-#include <queue>
+#include <doctest/doctest.h>
 
 namespace tests {
 
@@ -15,10 +14,6 @@ public:
 	explicit AstCompare(const cero::Ast& ast);
 	~AstCompare() override;
 
-	// Perform the comparison.
-	void compare();
-
-	void root();
 	void struct_definition(cero::AccessSpecifier access, std::string_view name, ChildScope cs);
 	void enum_definition(cero::AccessSpecifier access, std::string_view name, ChildScope cs);
 	void function_definition(cero::AccessSpecifier access, std::string_view name, ChildScope cs);
@@ -39,12 +34,48 @@ public:
 	void numeric_literal_expr(cero::NumericLiteralKind kind);
 
 	AstCompare(AstCompare&&) = delete;
-	AstCompare& operator=(AstCompare&&) = delete;
 
 private:
+	template<typename T>
+	class RecordState {
+	public:
+		RecordState() = default;
+		RecordState(RecordState&&) = delete;
+
+		~RecordState() {
+			cero_assert(!value_.has_value(), "test is misconstructed if this fails");
+		}
+
+		void push(T val) {
+			cero_assert(!value_.has_value(), "test is misconstructed if this fails");
+			value_.emplace(std::move(val));
+		}
+
+		T pop() {
+			cero_assert(value_.has_value(), "test is misconstructed if this fails");
+			return *std::exchange(value_, std::nullopt);
+		}
+
+	private:
+		std::optional<T> value_;
+	};
+
 	cero::AstCursor cursor_;
-	std::queue<std::any> data_;
-	uint32_t current_level_;
+	uint32_t current_level_ = 0;
+	uint32_t current_child_count_ = 0;
+	uint32_t root_count_ = 0;
+	RecordState<uint32_t> expected_level_;
+	RecordState<uint32_t> expected_child_count_;
+	RecordState<cero::AstNodeKind> expected_kind_;
+	RecordState<cero::AccessSpecifier> expected_access_;
+	RecordState<std::string_view> expected_name_;
+	RecordState<cero::ParameterSpecifier> expected_param_specifier_;
+	RecordState<cero::BindingSpecifier> expected_binding_specifier_;
+	RecordState<cero::UnaryOperator> expected_unary_op_;
+	RecordState<cero::BinaryOperator> expected_binary_op_;
+	RecordState<cero::NumericLiteralKind> expected_numeric_literal_kind_;
+	RecordState<std::string> expected_string_literal_;
+	RecordState<cero::PermissionSpecifier> expected_permission_specifier_;
 
 	void visit(const cero::AstRoot& root) override;
 	void visit(const cero::AstStructDefinition& struct_def) override;
@@ -77,16 +108,11 @@ private:
 	void visit(const cero::AstArrayTypeExpr& array_type) override;
 	void visit(const cero::AstFunctionTypeExpr& func_type) override;
 
-	void visit_child();
-	void visit_child_if(bool condition);
-	void visit_children(uint32_t n);
+	void record(cero::AstNodeKind kind);
+	void visit_children(ChildScope child_scope);
 
-	void expect(cero::AstNodeKind type);
-	void record(cero::AstNodeKind type);
-	void record_children(ChildScope child_scope);
-
-	template<typename T>
-	T pop();
+	template<typename N>
+	void expect(const N& node);
 };
 
 } // namespace tests

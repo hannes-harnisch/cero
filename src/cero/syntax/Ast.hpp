@@ -17,7 +17,7 @@ public:
 	bool has_errors() const;
 
 	/// Get a view of the underlying storage.
-	std::span<const AstNode> raw() const;
+	std::span<const AstNode> array() const;
 
 	/// Creates a tree-like string representation of the AST.
 	std::string to_string(const SourceGuard& source, uint8_t tab_size) const;

@@ -18,7 +18,6 @@ public:
 	}
 
 	ScopedAssign(ScopedAssign&&) = delete;
-	ScopedAssign& operator=(ScopedAssign&&) = delete;
 
 private:
 	T& object_;

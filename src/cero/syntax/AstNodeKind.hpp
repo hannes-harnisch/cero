@@ -80,7 +80,8 @@ struct AstStructDefinition {
 	AccessSpecifier access = {};
 	StringId name;
 
-	static uint32_t num_children() {
+	uint32_t num_children() const {
+		(void) this;
 		return 0;
 	}
 };
@@ -90,7 +91,8 @@ struct AstEnumDefinition {
 	AccessSpecifier access = {};
 	StringId name;
 
-	static uint32_t num_children() {
+	uint32_t num_children() const {
+		(void) this;
 		return 0;
 	}
 };

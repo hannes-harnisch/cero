@@ -27,7 +27,6 @@ fibonacci(var uint32 n) -> uint32 {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "fibonacci", [](AstCompare& c) {
 		c.function_parameter(cero::ParameterSpecifier::Var, "n", [](AstCompare& c) {
 			c.name_expr("uint32");
@@ -66,8 +65,6 @@ fibonacci(var uint32 n) -> uint32 {
 			c.name_expr("result");
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseIfStatement) {
@@ -86,7 +83,6 @@ public divChecked(int32 a, int32 b) -> Opt<int32> {
 	CHECK(!ast.has_errors());
 
 	AstCompare c(ast);
-	c.root();
 	c.function_definition(cero::AccessSpecifier::Public, "divChecked", [](AstCompare& c) {
 		c.function_parameter(cero::ParameterSpecifier::None, "a", [](AstCompare& c) {
 			c.name_expr("int32");
@@ -115,8 +111,6 @@ public divChecked(int32 a, int32 b) -> Opt<int32> {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 } // namespace tests
