@@ -68,8 +68,6 @@ foo(int32 a, int32 b) -> int32 {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseAdditiveAndComparisonOperators) {
@@ -195,8 +193,6 @@ bar(int32 a, int32 b, int32 c) -> bool {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseComparisonAndLogicalOperators) {
@@ -265,8 +261,6 @@ baz(int32 a, int32 b, int32 c, int32 d) -> bool {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 } // namespace tests

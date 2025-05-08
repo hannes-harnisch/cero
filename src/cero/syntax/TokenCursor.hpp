@@ -10,7 +10,7 @@ class TokenCursor {
 public:
 	/// Creates a cursor positioned at the first token of the given token stream.
 	explicit TokenCursor(const TokenStream& token_stream) :
-		it_(token_stream.raw().begin()) {
+		it_(token_stream.array().begin()) {
 	}
 
 	/// Returns the current token.

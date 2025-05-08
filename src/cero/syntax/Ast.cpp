@@ -12,7 +12,7 @@ bool Ast::has_errors() const {
 	return has_errors_;
 }
 
-std::span<const AstNode> Ast::raw() const {
+std::span<const AstNode> Ast::array() const {
 	return {nodes_};
 }
 

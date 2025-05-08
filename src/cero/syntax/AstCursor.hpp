@@ -11,6 +11,8 @@ public:
 	/// Creates a cursor positioned at the root of the given AST.
 	explicit AstCursor(const Ast& ast);
 
+	void visit_one(AstVisitor& visitor);
+
 	/// Traverse the entire AST using the given visitor.
 	void visit_all(AstVisitor& visitor);
 
@@ -25,6 +27,7 @@ public:
 
 private:
 	std::span<const AstNode>::iterator it_;
+	std::span<const AstNode>::iterator end_;
 	uint32_t num_children_to_visit_;
 };
 

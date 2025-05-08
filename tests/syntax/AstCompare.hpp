@@ -3,8 +3,7 @@
 #include <cero/syntax/AstCursor.hpp>
 #include <cero/syntax/AstVisitor.hpp>
 
-#include <any>
-#include <queue>
+#include <doctest/doctest.h>
 
 namespace tests {
 
@@ -14,9 +13,6 @@ public:
 
 	explicit AstCompare(const cero::Ast& ast);
 	~AstCompare() override;
-
-	// Perform the comparison.
-	void compare();
 
 	void root();
 	void struct_definition(cero::AccessSpecifier access, std::string_view name, ChildScope cs);
@@ -39,12 +35,45 @@ public:
 	void numeric_literal_expr(cero::NumericLiteralKind kind);
 
 	AstCompare(AstCompare&&) = delete;
-	AstCompare& operator=(AstCompare&&) = delete;
 
 private:
+	template<typename T>
+	class RecordState {
+	public:
+		RecordState() = default;
+		RecordState(RecordState&&) = delete;
+
+		~RecordState() {
+			CHECK(!value_.has_value());
+		}
+
+		void push(T value) {
+			CHECK(!value_.has_value());
+			value_.emplace(std::move(value));
+		}
+
+		T pop() {
+			REQUIRE(value_.has_value());
+			return *std::exchange(value_, std::nullopt);
+		}
+
+	private:
+		std::optional<T> value_;
+	};
+
 	cero::AstCursor cursor_;
-	std::queue<std::any> data_;
-	uint32_t current_level_;
+	uint32_t current_level_ = 0;
+	RecordState<uint32_t> next_level;
+	RecordState<cero::AstNodeKind> next_kind;
+	RecordState<cero::AccessSpecifier> next_access;
+	RecordState<std::string_view> next_name;
+	RecordState<cero::ParameterSpecifier> next_param_specifier;
+	RecordState<cero::BindingSpecifier> next_binding_specifier;
+	RecordState<cero::UnaryOperator> next_unary_op;
+	RecordState<cero::BinaryOperator> next_binary_op;
+	RecordState<cero::NumericLiteralKind> next_numeric_literal_kind;
+	RecordState<std::string> next_string_literal;
+	RecordState<cero::PermissionSpecifier> next_permission_specifier;
 
 	void visit(const cero::AstRoot& root) override;
 	void visit(const cero::AstStructDefinition& struct_def) override;
@@ -81,12 +110,9 @@ private:
 	void visit_child_if(bool condition);
 	void visit_children(uint32_t n);
 
-	void expect(cero::AstNodeKind type);
-	void record(cero::AstNodeKind type);
+	void expect(cero::AstNodeKind kind);
+	void record(cero::AstNodeKind kind);
 	void record_children(ChildScope child_scope);
-
-	template<typename T>
-	T pop();
 };
 
 } // namespace tests

@@ -1,4 +1,5 @@
 #include "AstCompare.hpp"
+
 #include "common/ExhaustiveReporter.hpp"
 #include "common/Test.hpp"
 
@@ -19,8 +20,6 @@ main() {
 	AstCompare c(ast);
 	c.root();
 	c.function_definition(cero::AccessSpecifier::None, "main", [](AstCompare&) {});
-
-	c.compare();
 }
 
 } // namespace tests

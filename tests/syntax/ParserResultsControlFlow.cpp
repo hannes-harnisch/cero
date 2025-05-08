@@ -66,8 +66,6 @@ fibonacci(var uint32 n) -> uint32 {
 			c.name_expr("result");
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseIfStatement) {
@@ -115,8 +113,6 @@ public divChecked(int32 a, int32 b) -> Opt<int32> {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 } // namespace tests

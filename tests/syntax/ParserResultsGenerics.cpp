@@ -119,8 +119,6 @@ f() -> List<List<List<int32>>> {
 			c.group_expr([](AstCompare&) {});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseLessAndRightShift) {
@@ -188,8 +186,6 @@ oog(int32 a, int32 b, int32 c) -> bool {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseAmbiguousGenericCallVsComparisonArguments) {
@@ -225,8 +221,6 @@ ouch(float32 e) -> float64 {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseComparisonArgumentsVsGenericPattern) {
@@ -263,8 +257,6 @@ ouch(float32 e) -> float64 {
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseComparisonAndRightShiftAsGenericArgument) {
@@ -314,8 +306,6 @@ meow() -> A<(D >> E)> {
 			c.group_expr([](AstCompare&) {});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseGenericParameters) {
@@ -393,8 +383,6 @@ moo(List<int32> _a,
 			});
 		});
 	});
-
-	c.compare();
 }
 
 CERO_TEST(ParseVariableWithGenericType) {
@@ -480,8 +468,6 @@ bark() {
 			c.group_expr([](AstCompare&) {});
 		});
 	});
-
-	c.compare();
 }
 
 } // namespace tests

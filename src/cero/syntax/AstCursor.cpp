@@ -6,8 +6,14 @@
 namespace cero {
 
 AstCursor::AstCursor(const Ast& ast) :
-	it_(ast.raw().begin()),
+	it_(ast.array().begin()),
+	end_(ast.array().end()),
 	num_children_to_visit_(it_->num_children()) {
+}
+
+void AstCursor::visit_one(AstVisitor& visitor) {
+	cero_assert(it_ != end_, "Cursor is at end.");
+	it_++->visit(visitor);
 }
 
 void AstCursor::visit_all(AstVisitor& visitor) {
