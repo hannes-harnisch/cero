@@ -1,8 +1,8 @@
 /.*/
 /build/
-/CMakeFiles/
 /cmake-build-*
 /out/
+CMakeFiles/
 
 CMakeCache.txt
 CMakeUserPresets.json
