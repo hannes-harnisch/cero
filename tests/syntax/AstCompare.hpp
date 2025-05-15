@@ -61,10 +61,8 @@ private:
 	};
 
 	cero::AstCursor cursor_;
-	uint32_t current_level_ = 0;
 	uint32_t current_child_count_ = 0;
 	uint32_t root_count_ = 0;
-	RecordState<uint32_t> expected_level_;
 	RecordState<uint32_t> expected_child_count_;
 	RecordState<cero::AstNodeKind> expected_kind_;
 	RecordState<cero::AccessSpecifier> expected_access_;

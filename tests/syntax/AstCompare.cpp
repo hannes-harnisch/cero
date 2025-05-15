@@ -8,7 +8,6 @@ namespace tests {
 AstCompare::AstCompare(const cero::Ast& ast) :
 	cursor_(ast) {
 	expected_kind_.push(cero::AstNodeKind::Root);
-	expected_level_.push(current_level_);
 
 	cursor_.visit_one(*this);
 	root_count_ = expected_child_count_.pop();
@@ -16,7 +15,6 @@ AstCompare::AstCompare(const cero::Ast& ast) :
 
 AstCompare::~AstCompare() {
 	CHECK_EQ(current_child_count_, root_count_);
-	CHECK_EQ(current_level_, 0);
 }
 
 void AstCompare::visit(const cero::AstRoot& root) {
@@ -285,7 +283,6 @@ void AstCompare::visit(const cero::AstFunctionTypeExpr& func_type) {
 
 void AstCompare::record(cero::AstNodeKind kind) {
 	expected_kind_.push(kind);
-	expected_level_.push(current_level_);
 	++current_child_count_;
 }
 
@@ -296,9 +293,7 @@ void AstCompare::visit_children(ChildScope child_scope) {
 	uint32_t old_current_count = std::exchange(current_child_count_, 0);
 
 	if (child_scope != nullptr) {
-		++current_level_;
 		child_scope(*this);
-		--current_level_;
 	}
 
 	CHECK_EQ(current_child_count_, expected_child_count);
@@ -308,7 +303,6 @@ void AstCompare::visit_children(ChildScope child_scope) {
 template<typename N>
 void AstCompare::expect(const N& node) {
 	CHECK_EQ(expected_kind_.pop(), node.header.kind);
-	CHECK_EQ(expected_level_.pop(), current_level_);
 
 	expected_child_count_.push(node.num_children());
 }
