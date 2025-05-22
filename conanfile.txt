@@ -1,0 +1,10 @@
+[requires]
+fmt/11.2.0
+doctest/2.4.12
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[layout]
+cmake_layout

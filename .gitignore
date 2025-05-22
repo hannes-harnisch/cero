@@ -1,0 +1,13 @@
+/.*/
+/build/
+/cmake-build-*
+/out/
+CMakeFiles/
+
+CMakeCache.txt
+CMakeUserPresets.json
+
+conan_provider.cmake
+
+*.sln
+*.vcxproj
