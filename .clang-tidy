@@ -1,0 +1,7 @@
+Checks: >
+    -hicpp-exception-baseclass,
+    -misc-no-recursion,
+    -modernize-return-braced-init-list,
+    -modernize-use-auto,
+    -modernize-use-nodiscard,
+    -*-use-designated-initializers,
