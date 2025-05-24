@@ -3,7 +3,7 @@
 namespace cero {
 
 std::string CodeLocation::to_string() const {
-	return fmt::format("{}:{}:{}", source_name, line, column);
+	return fmt::format("{}:{}:{}", source_path, line, column);
 }
 
 std::string CodeLocation::to_short_string() const {

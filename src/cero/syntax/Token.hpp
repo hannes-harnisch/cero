@@ -4,6 +4,7 @@
 
 namespace cero {
 
+/// The category of a given token (literals, keywords, punctuation, etc.).
 enum class TokenKind {
 	// Variable-length tokens
 	Name,
