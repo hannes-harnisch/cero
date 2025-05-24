@@ -1,4 +1,5 @@
 ﻿#include "common/test.hh"
+#include "common/test_reporter.hh"
 
 #include <cero/syntax/lexer.hh>
 
@@ -16,7 +17,8 @@ void expect_tokens(const cero::TokenList& tokens, std::span<const cero::Token> e
 CERO_TEST(lexer_empty_source) {
 	cero::SourceView source = make_test_source("");
 
-	cero::TokenList tokens = cero::run_lexer(source, true);
+	TestReporter r;
+	cero::TokenList tokens = cero::run_lexer(source, r, true);
 
 	cero::Token expected[] = {
 	    {cero::TokenKind::end_of_file, 0, 0},
