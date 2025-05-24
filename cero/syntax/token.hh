@@ -115,6 +115,9 @@ struct Token {
 	    variable_length(_variable_length) {
 	}
 
+	/// The result is meaningless if the given source is not the source from which the token was created during lexing.
+	CodeLocation locate_in(const SourceView& source, uint8_t tab_size) const;
+
 	friend bool operator==(Token, Token) = default;
 };
 

@@ -17,6 +17,9 @@ public:
 	/// Gets the path of the original source input.
 	std::string_view get_path() const;
 
+	/// Calculates the line and column that a given source offset corresponds to.
+	CodeLocation locate(SourceSize offset, uint8_t tab_size) const;
+
 private:
 	const char* text_ = nullptr;
 	std::string path_;
