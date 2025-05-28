@@ -6,7 +6,12 @@
 
 namespace cero {
 
+enum class LexerFlags {
+	none = 0,
+	emit_comments = 1 << 0,
+};
+
 /// Performs lexical analysis on a single source input.
-TokenList run_lexer(const SourceView& source, Reporter& reporter, bool emit_comments, uint8_t tab_size = default_tab_size);
+TokenList run_lexer(const SourceView& source, Reporter& reporter, LexerFlags flags, uint8_t tab_size = default_tab_size);
 
 } // namespace cero
