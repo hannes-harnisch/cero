@@ -33,6 +33,7 @@ enum class TokenKind {
 	kw_in,
 	kw_interface,
 	kw_let,
+	kw_mut,
 	kw_private,
 	kw_public,
 	kw_raise,
@@ -42,7 +43,6 @@ enum class TokenKind {
 	kw_switch,
 	kw_try,
 	kw_unchecked,
-	kw_var,
 	kw_while,
 
 	// one-character tokens
