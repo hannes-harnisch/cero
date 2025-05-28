@@ -8,7 +8,7 @@ void build_source(const Source& source, Reporter& reporter) {
 	if (auto lock_result = source.lock()) {
 		const SourceView& source_view = *lock_result;
 
-		TokenList token_list = run_lexer(source_view, reporter, false);
+		TokenList token_list = run_lexer(source_view, reporter, LexerFlags::none);
 		(void) token_list;
 	}
 	else {
