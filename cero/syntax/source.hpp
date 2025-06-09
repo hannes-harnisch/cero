@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cero/report/code_location.hpp"
+#include "cero/util/file_view.hpp"
 
 namespace cero {
 
@@ -21,6 +22,7 @@ public:
 	CodeLocation locate(SourceSize offset, uint8_t tab_size) const;
 
 private:
+	std::optional<FileView> file_view_;
 	const char* text_ = nullptr;
 	std::string path_;
 

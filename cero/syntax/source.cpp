@@ -5,7 +5,11 @@
 namespace cero {
 
 std::string_view SourceView::get_text() const {
-	return text_;
+	if (file_view_.has_value()) {
+		return file_view_->get_text();
+	} else {
+		return text_;
+	}
 }
 
 std::string_view SourceView::get_path() const {
@@ -51,10 +55,19 @@ Source Source::from_string(const char* text, std::string name) {
 }
 
 std::expected<SourceView, std::error_condition> Source::lock() const {
-	SourceView view;
-	view.text_ = text_;
-	view.path_ = path_;
-	return view;
+	if (text_ == nullptr) {
+		return FileView::from(path_).transform([this](FileView&& file_view) {
+			SourceView view;
+			view.file_view_ = std::move(file_view);
+			view.path_ = path_;
+			return view;
+		});
+	} else {
+		SourceView view;
+		view.text_ = text_;
+		view.path_ = path_;
+		return view;
+	}
 }
 
 std::string_view Source::get_path() const {
