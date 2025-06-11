@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cero/syntax/source.hpp"
+#include "cero/util/assert.hpp"
 
 namespace cero {
 
@@ -26,6 +27,8 @@ public:
 	void advance() {
 		if (it_ != end_) {
 			++it_;
+		} else {
+			cero_assert_debug(false, "tried to advance past end of source");
 		}
 	}
 
