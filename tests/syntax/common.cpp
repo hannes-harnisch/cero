@@ -1,11 +1,19 @@
 #include "common.hpp"
 
-#include <doctest/doctest.h>
+#include "common/test.hpp"
+#include "common/test_reporter.hpp"
+
+#include <cero/syntax/lexer.hpp>
 
 namespace tests {
 
-void check_tokens_equal(const cero::TokenList& tokens, std::span<const cero::Token> expected_tokens) {
-	auto token_array = tokens.get_array();
+void check_tokens_equal(const char* source_text, std::span<const cero::Token> expected_tokens) {
+	cero::SourceView source = make_test_source(source_text);
+
+	TestReporter r;
+	cero::TokenList tokens = cero::run_lexer(source, r, cero::LexerFlags::emit_comments);
+
+	std::span<const cero::Token> token_array = tokens.get_array();
 	REQUIRE_EQ(token_array.size(), expected_tokens.size());
 
 	size_t i = 0;
