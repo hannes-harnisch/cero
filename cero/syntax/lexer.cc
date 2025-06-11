@@ -112,6 +112,30 @@ struct Lexer {
 		case 'y': (this->*keyword_handler<'y'>) (); break;
 		case 'z': (this->*keyword_handler<'z'>) (); break;
 
+		case '(': on_one_char_token(TokenKind::l_paren); break;
+		case ')': on_one_char_token(TokenKind::r_paren); break;
+		case '[': on_one_char_token(TokenKind::l_bracket); break;
+		case ']': on_one_char_token(TokenKind::r_bracket); break;
+		case '{': on_one_char_token(TokenKind::l_brace); break;
+		case '}': on_one_char_token(TokenKind::r_brace); break;
+		case ',': on_one_char_token(TokenKind::comma); break;
+		case ';': on_one_char_token(TokenKind::semicolon); break;
+		case '^': on_one_char_token(TokenKind::caret); break;
+		case '<': on_left_angle(); break;
+		case '>': on_right_angle(); break;
+		case '.': on_dot(); break;
+		case ':': on_colon(); break;
+		case '=': on_equals(); break;
+		case '+': on_plus(); break;
+		case '-': on_minus(); break;
+		case '*': on_star(); break;
+		case '/': on_slash(); break;
+		case '%': on_percent(); break;
+		case '&': on_ampersand(); break;
+		case '|': on_pipe(); break;
+		case '~': on_tilde(); break;
+		case '!': on_bang(); break;
+
 		default: cursor_.advance(); break;
 		}
 	}
@@ -181,6 +205,212 @@ struct Lexer {
 			else {
 				// TODO: Unicode
 			}
+		}
+	}
+
+	void on_one_char_token(TokenKind kind) {
+		SourceSize offset = get_offset_and_advance();
+		tokens_.put({kind, offset});
+	}
+
+	void on_left_angle() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('<')) {
+			if (cursor_.match('=')) {
+				tokens_.put({TokenKind::l_angle_angle_eq, offset});
+			}
+			else {
+				tokens_.put({TokenKind::l_angle_angle, offset});
+			}
+		}
+		else if (cursor_.match('=')) {
+			tokens_.put({TokenKind::l_angle_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::l_angle, offset});
+		}
+	}
+
+	void on_right_angle() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('>')) {
+			if (cursor_.match('=')) {
+				tokens_.put({TokenKind::r_angle_angle_eq, offset});
+			}
+			else {
+				// emit two tokens to parse their use as angle brackets more easily
+				tokens_.put({TokenKind::r_angle, offset});
+				tokens_.put({TokenKind::r_angle, offset + 1});
+			}
+		}
+		else if (cursor_.match('=')) {
+			tokens_.put({TokenKind::r_angle_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::r_angle, offset});
+		}
+	}
+
+	void on_dot() {
+		SourceSize offset = get_offset_and_advance();
+
+		std::optional<char> next = cursor_.peek();
+		if (next.has_value() && is_decimal_digit(*next)) {
+			// TODO: consume numeric literal
+		}
+		else {
+			tokens_.put({TokenKind::dot, offset});
+		}
+	}
+
+	void on_colon() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match(':')) {
+			tokens_.put({TokenKind::colon_colon, offset});
+		}
+		else {
+			tokens_.put({TokenKind::colon, offset});
+		}
+	}
+
+	void on_equals() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('=')) {
+			tokens_.put({TokenKind::eq_eq, offset});
+		}
+		else if (cursor_.match('>')) {
+			tokens_.put({TokenKind::thick_arrow, offset});
+		}
+		else {
+			tokens_.put({TokenKind::eq, offset});
+		}
+	}
+
+	void on_plus() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('+')) {
+			tokens_.put({TokenKind::plus_plus, offset});
+		}
+		else if (cursor_.match('=')) {
+			tokens_.put({TokenKind::plus_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::plus, offset});
+		}
+	}
+
+	void on_minus() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('>')) {
+			tokens_.put({TokenKind::thin_arrow, offset});
+		}
+		else if (cursor_.match('-')) {
+			tokens_.put({TokenKind::minus_minus, offset});
+		}
+		else if (cursor_.match('=')) {
+			tokens_.put({TokenKind::minus_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::minus, offset});
+		}
+	}
+
+	void on_star() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('=')) {
+			tokens_.put({TokenKind::star_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::star, offset});
+		}
+	}
+
+	void on_slash() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('=')) {
+			tokens_.put({TokenKind::slash_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::slash, offset});
+		}
+	}
+
+	void on_percent() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('=')) {
+			tokens_.put({TokenKind::percent_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::percent, offset});
+		}
+	}
+
+	void on_ampersand() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('&')) {
+			if (cursor_.match('=')) {
+				tokens_.put({TokenKind::and_and_eq, offset});
+			}
+			else {
+				tokens_.put({TokenKind::and_and, offset});
+			}
+		}
+		else if (cursor_.match('=')) {
+			tokens_.put({TokenKind::ampersand_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::ampersand, offset});
+		}
+	}
+
+	void on_pipe() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('|')) {
+			if (cursor_.match('=')) {
+				tokens_.put({TokenKind::pipe_pipe_eq, offset});
+			}
+			else {
+				tokens_.put({TokenKind::pipe_pipe, offset});
+			}
+		}
+		else if (cursor_.match('=')) {
+			tokens_.put({TokenKind::pipe_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::pipe, offset});
+		}
+	}
+
+	void on_tilde() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('=')) {
+			tokens_.put({TokenKind::tilde_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::tilde, offset});
+		}
+	}
+
+	void on_bang() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('=')) {
+			tokens_.put({TokenKind::bang_eq, offset});
+		}
+		else {
+			tokens_.put({TokenKind::bang, offset});
 		}
 	}
 
