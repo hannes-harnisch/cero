@@ -178,16 +178,20 @@ CERO_TEST(lexer_dot) {
 	const char* source = ". .. ... .5.25.. .5 .25.";
 
 	cero::Token expected[] = {
-	    {dot,         0,  0},
-	    {dot,         2,  0},
-	    {dot,         3,  0},
-	    {dot,         5,  0},
-	    {dot,         6,  0},
-	    {dot,         7,  0},
-	    {dot,         14, 0},
-	    {dot,         15, 0},
-	    {dot,         23, 0},
-	    {end_of_file, 24, 0},
+	    {dot,           0,  0},
+	    {dot,           2,  0},
+	    {dot,           3,  0},
+	    {dot,           5,  0},
+	    {dot,           6,  0},
+	    {dot,           7,  0},
+	    {float_literal, 9,  2},
+	    {float_literal, 11, 3},
+	    {dot,           14, 0},
+	    {dot,           15, 0},
+	    {float_literal, 17, 2},
+	    {float_literal, 20, 3},
+	    {dot,           23, 0},
+	    {end_of_file,   24, 0},
 	};
 	check_tokens_equal(source, expected);
 }

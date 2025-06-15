@@ -13,14 +13,17 @@ void check_tokens_equal(const char* source_text, std::span<const cero::Token> ex
 	TestReporter r;
 	cero::TokenList tokens = cero::run_lexer(source, r, cero::LexerFlags::emit_comments);
 
-	std::span<const cero::Token> token_array = tokens.get_array();
-	REQUIRE_EQ(token_array.size(), expected_tokens.size());
-
-	size_t i = 0;
-	for (cero::Token expected : expected_tokens) {
-		cero::Token token = token_array[i++];
-		CHECK_EQ(token, expected);
+	// checking for token equality first
+	std::span<const cero::Token> received_tokens = tokens.get_array();
+	size_t count = std::min(expected_tokens.size(), received_tokens.size());
+	for (size_t i = 0; i < count; ++i) {
+		cero::Token expected = expected_tokens[i];
+		cero::Token received = received_tokens[i];
+		CHECK_EQ(received, expected);
 	}
+
+	// checking for extra or missing tokens
+	REQUIRE_EQ(received_tokens.size(), expected_tokens.size());
 }
 
 } // namespace tests
