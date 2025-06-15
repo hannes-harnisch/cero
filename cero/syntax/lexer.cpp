@@ -104,6 +104,17 @@ struct Lexer {
 		case 'y': keyword_handler<'y'>(*this); break;
 		case 'z': keyword_handler<'z'>(*this); break;
 
+		case '0': on_zero(); break;
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9': on_nonzero(); break;
+
 		case '(': on_one_char_token(TokenKind::l_paren); break;
 		case ')': on_one_char_token(TokenKind::r_paren); break;
 		case '[': on_one_char_token(TokenKind::l_bracket); break;
@@ -200,6 +211,100 @@ struct Lexer {
 		}
 	}
 
+	void on_zero() {
+		SourceSize offset = get_offset_and_advance();
+
+		if (cursor_.match('x')) {
+			SourceSize length = consume_digit_sequence<is_hexadecimal_digit>(offset);
+			tokens_.add(TokenKind::hex_int_literal, offset, length);
+			return;
+		}
+
+		if (cursor_.match('b')) {
+			// consume any decimal digit for better errors during literal parsing later
+			SourceSize length = consume_digit_sequence<is_decimal_digit>(offset);
+			tokens_.add(TokenKind::bin_int_literal, offset, length);
+			return;
+		}
+
+		if (cursor_.match('o')) {
+			// consume any decimal digit for better errors during literal parsing later
+			SourceSize length = consume_digit_sequence<is_decimal_digit>(offset);
+			tokens_.add(TokenKind::oct_int_literal, offset, length);
+			return;
+		}
+
+		handle_decimal_literal(offset);
+	}
+
+	void on_nonzero() {
+		SourceSize offset = get_offset_and_advance();
+		handle_decimal_literal(offset);
+	}
+
+	void handle_decimal_literal(SourceSize offset) {
+		SourceSize length = consume_digit_sequence<is_decimal_digit>(offset);
+
+		std::optional<char> next = cursor_.peek();
+		if (next.has_value() && *next == '.') {
+			SourceSize dot_offset = get_offset_and_advance();
+			SourceSize length_after_dot = consume_digit_sequence<is_decimal_digit>(dot_offset);
+
+			// means there is a float literal of the form `62.375`
+			if (length_after_dot > 1) {
+				length = dot_offset - offset + length_after_dot;
+				tokens_.add(TokenKind::float_literal, offset, length);
+			}
+			else {
+				tokens_.add(TokenKind::dec_int_literal, offset, length);
+				tokens_.add(TokenKind::dot, dot_offset, 0);
+			}
+		}
+		else {
+			tokens_.add(TokenKind::dec_int_literal, offset, length);
+		}
+	}
+
+	/// Consumes a sequence of digits, where digits are decided by the given predicate. Whitespace within the sequence is
+	/// allowed, but trailing whitespace is not counted towards the length.
+	/// @return The length of the digit sequence including any characters starting from the given offset.
+	template<bool digit_predicate(char)>
+	SourceSize consume_digit_sequence(SourceSize offset) {
+		while (std::optional<char> next = cursor_.peek()) {
+			char c = *next;
+
+			if (digit_predicate(c)) {
+				cursor_.advance();
+				continue;
+			}
+
+			if (!is_ascii_whitespace(c)) {
+				break;
+			}
+
+			// handle whitespace within numeric literals, but don't count it towards the length if it's trailing
+			SourceSize length = cursor_.offset() - offset;
+			cursor_.advance();
+
+			while ((next = cursor_.peek())) {
+				c = *next;
+				if (!is_ascii_whitespace(c)) {
+					break;
+				}
+				cursor_.advance();
+			}
+
+			if (!digit_predicate(c)) {
+				return length;
+			}
+
+			cursor_.advance();
+		}
+
+		SourceSize length = cursor_.offset() - offset;
+		return length;
+	}
+
 	void on_one_char_token(TokenKind kind) {
 		SourceSize offset = get_offset_and_advance();
 		tokens_.add(kind, offset, 0);
@@ -245,9 +350,11 @@ struct Lexer {
 	void on_dot() {
 		SourceSize offset = get_offset_and_advance();
 
-		std::optional<char> next = cursor_.peek();
-		if (next.has_value() && is_decimal_digit(*next)) {
-			// TODO: consume numeric literal
+		SourceSize length = consume_digit_sequence<is_decimal_digit>(offset);
+
+		// means there is a float literal of the form `.375`
+		if (length > 1) {
+			tokens_.add(TokenKind::float_literal, offset, length);
 		}
 		else {
 			tokens_.add(TokenKind::dot, offset, 0);
