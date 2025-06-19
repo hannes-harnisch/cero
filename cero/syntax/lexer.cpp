@@ -9,8 +9,8 @@ namespace cero {
 struct Lexer {
 	TokenList tokens_;
 	SourceCursor cursor_;
+	const SourceView& source_;
 	const std::string_view source_text_;
-	const std::string_view source_path_;
 	Reporter& reporter_;
 	const LexerFlags flags_;
 	const uint8_t tab_size_;
@@ -18,8 +18,8 @@ struct Lexer {
 	Lexer(const SourceView& source, Reporter& reporter, LexerFlags flags, uint8_t tab_size) :
 		tokens_(source),
 		cursor_(source),
+		source_(source),
 		source_text_(source.get_text()),
-		source_path_(source.get_path()),
 		reporter_(reporter),
 		flags_(flags),
 		tab_size_(tab_size) {
@@ -28,15 +28,23 @@ struct Lexer {
 	TokenList run() && {
 		// do not try to lex a source above the limit, otherwise offset values might overflow
 		if (source_text_.length() <= source_size_max) {
-			while (std::optional<char> next = cursor_.peek()) {
-				handle_next_character(*next);
-			}
+			run_on_source();
 		} else {
-			reporter_.report(CodeLocation {source_path_, 0, 0}, Message::source_file_too_large, MessageArgs(source_size_max));
+			reporter_.report({source_.get_path(), 0, 0}, Message::source_file_too_large, MessageArgs(source_size_max));
 		}
 
 		tokens_.add(TokenKind::end_of_file, cursor_.offset(), 0);
 		return std::move(tokens_);
+	}
+
+	void run_on_source() {
+		while (char c = cursor_.peek()) {
+			handle_next_character(c);
+		}
+
+		if (cursor_.valid()) { // report early return due to embedded null character
+			report(Message::invalid_character, cursor_.offset(), MessageArgs(0));
+		}
 	}
 
 	void handle_next_character(char character) {
@@ -196,8 +204,7 @@ struct Lexer {
 	}();
 
 	void consume_word() {
-		while (std::optional<char> next = cursor_.peek()) {
-			const char c = *next;
+		while (char c = cursor_.peek()) {
 			if (is_ascii_identifier_char(c)) {
 				cursor_.advance();
 			} else if (is_ascii(c)) {
@@ -242,8 +249,7 @@ struct Lexer {
 	void handle_decimal_literal(SourceSize offset) {
 		SourceSize length = consume_digit_sequence<is_decimal_digit>(offset);
 
-		std::optional<char> next = cursor_.peek();
-		if (next.has_value() && *next == '.') {
+		if (cursor_.peek() == '.') {
 			SourceSize dot_offset = get_offset_and_advance();
 			SourceSize length_after_dot = consume_digit_sequence<is_decimal_digit>(dot_offset);
 
@@ -262,11 +268,9 @@ struct Lexer {
 	/// Consumes a sequence of digits, where digits are decided by the given predicate. Whitespace within the sequence is
 	/// allowed, but trailing whitespace is not counted towards the length.
 	/// @return The length of the digit sequence including any characters starting from the given offset.
-	template<bool digit_predicate(char)>
+	template<bool (&digit_predicate)(char)>
 	SourceSize consume_digit_sequence(SourceSize offset) {
-		while (std::optional<char> next = cursor_.peek()) {
-			char c = *next;
-
+		while (char c = cursor_.peek()) {
 			if (digit_predicate(c)) {
 				cursor_.advance();
 				continue;
@@ -278,21 +282,17 @@ struct Lexer {
 
 			// handle whitespace within numeric literals, but don't count it towards the length if it's trailing
 			SourceSize length = cursor_.offset() - offset;
-			cursor_.advance();
 
-			while ((next = cursor_.peek())) {
-				c = *next;
-				if (!is_ascii_whitespace(c)) {
-					break;
-				}
+			do {
 				cursor_.advance();
-			}
+				c = cursor_.peek();
+			} while (is_ascii_whitespace(c));
 
-			if (!digit_predicate(c)) {
+			if (digit_predicate(c)) {
+				cursor_.advance();
+			} else {
 				return length;
 			}
-
-			cursor_.advance();
 		}
 
 		SourceSize length = cursor_.offset() - offset;
@@ -469,6 +469,11 @@ struct Lexer {
 		SourceSize offset = cursor_.offset();
 		cursor_.advance();
 		return offset;
+	}
+
+	void report(Message message, SourceSize offset, MessageArgs args) {
+		CodeLocation location = source_.locate(offset, tab_size_);
+		reporter_.report(location, message, std::move(args));
 	}
 };
 
