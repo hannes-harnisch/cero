@@ -152,6 +152,9 @@ struct Lexer {
 		case '~': on_tilde(); break;
 		case '!': on_bang(); break;
 
+		case '"':  on_quote(TokenKind::string_literal, '"'); break;
+		case '\'': on_quote(TokenKind::char_literal, '\''); break;
+
 		default: cursor_.advance(); break;
 		}
 	}
@@ -517,6 +520,33 @@ struct Lexer {
 		else {
 			tokens_.put({TokenKind::bang, offset});
 		}
+	}
+
+	void on_quote(TokenKind kind, char quote) {
+		SourceSize offset = get_offset_and_advance();
+
+		bool ignore_quote = false;
+		while (char c = cursor_.peek()) {
+			if (c == '\n') {
+				report(Message::missing_closing_quote, cursor_.offset(), MessageArgs());
+				break;
+			}
+
+			cursor_.advance();
+
+			if (c == '\\') {
+				ignore_quote ^= true; // flip bool so we correctly handle an escaped backslash within the literal
+			}
+			else if (c == quote && !ignore_quote) {
+				break;
+			}
+			else if (ignore_quote) {
+				ignore_quote = false;
+			}
+		}
+
+		SourceSize length = cursor_.offset() - offset;
+		tokens_.put({kind, offset, length});
 	}
 
 	SourceSize get_offset_and_advance() {
