@@ -15,12 +15,12 @@ public:
 	}
 
 	/// Returns the current character or null if the cursor is at the end.
-	std::optional<char> peek() const {
+	char peek() const {
 		if (it_ != end_) {
 			return *it_;
 		}
 		else {
-			return std::nullopt;
+			return '\0';
 		}
 	}
 

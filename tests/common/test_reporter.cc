@@ -22,8 +22,8 @@ void TestReporter::expect(uint32_t line, uint32_t column, cero::Message message,
 	expected_reports_.emplace(location, std::move(message_text));
 }
 
-void TestReporter::set_source_name(const char* source_name) {
-	source_name_ = source_name;
+void TestReporter::set_source_name(std::string source_name) {
+	source_name_ = std::move(source_name);
 }
 
 void TestReporter::handle_report(const cero::CodeLocation& location, cero::MessageLevel, std::string message_text) {

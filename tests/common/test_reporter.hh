@@ -21,7 +21,7 @@ public:
 	void expect(uint32_t line, uint32_t column, cero::Message message, cero::MessageArgs args);
 
 	/// Sets the current source name used for expected reports.
-	void set_source_name(const char* source_name);
+	void set_source_name(std::string source_name);
 
 	TestReporter(TestReporter&&) = delete;
 
@@ -34,7 +34,7 @@ private:
 	};
 
 	std::queue<Report> expected_reports_;
-	const char* source_name_;
+	std::string source_name_;
 
 	void handle_report(const cero::CodeLocation& location, cero::MessageLevel message_level, std::string message_text) override;
 };
