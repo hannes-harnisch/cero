@@ -202,4 +202,60 @@ CERO_TEST(lexer_float_literals) {
 	check_tokens_equal(source, expected);
 }
 
+CERO_TEST(lexer_string_literals) {
+	const char* source = R"_____(
+"123\""
+"\""
+""
+"\\"
+"\a"
+"\np"
+"\"\\a\a"
+"\"\\\"\\\\a\\a\""
+"something something something dark side"
+)_____";
+
+	cero::Token expected[] = {
+	    {string_literal, 1,   7 },
+	    {string_literal, 9,   4 },
+	    {string_literal, 14,  2 },
+	    {string_literal, 17,  4 },
+	    {string_literal, 22,  4 },
+	    {string_literal, 27,  5 },
+	    {string_literal, 33,  9 },
+	    {string_literal, 43,  18},
+	    {string_literal, 62,  41},
+	    {end_of_file,    104, 0 },
+	};
+	check_tokens_equal(source, expected);
+}
+
+CERO_TEST(lexer_char_literals) {
+	const char* source = R"_____(
+'a'
+'0'
+'\0'
+''
+'\\'
+'\n'
+'abc'
+'\''
+'"'
+)_____";
+
+	cero::Token expected[] = {
+	    {char_literal, 1,  3},
+	    {char_literal, 5,  3},
+	    {char_literal, 9,  4},
+	    {char_literal, 14, 2},
+	    {char_literal, 17, 4},
+	    {char_literal, 22, 4},
+	    {char_literal, 27, 5},
+	    {char_literal, 33, 4},
+	    {char_literal, 38, 3},
+	    {end_of_file,  42, 0},
+	};
+	check_tokens_equal(source, expected);
+}
+
 } // namespace tests
