@@ -443,12 +443,59 @@ struct Lexer {
 	void on_slash() {
 		SourceSize offset = get_offset_and_advance();
 
-		if (cursor_.match('=')) {
+		if (cursor_.match('/')) {
+			consume_line_comment();
+
+			if (util::has_flags(flags_, LexerFlags::emit_comments)) {
+				SourceSize length = cursor_.offset() - offset;
+				tokens_.put({TokenKind::line_comment, offset, length});
+			}
+		}
+		else if (cursor_.match('*')) {
+			consume_block_comment(offset);
+
+			if (util::has_flags(flags_, LexerFlags::emit_comments)) {
+				SourceSize length = cursor_.offset() - offset;
+				tokens_.put({TokenKind::block_comment, offset, length});
+			}
+		}
+		else if (cursor_.match('=')) {
 			tokens_.put({TokenKind::slash_eq, offset});
 		}
 		else {
 			tokens_.put({TokenKind::slash, offset});
 		}
+	}
+
+	void consume_line_comment() {
+		while (char c = cursor_.peek()) {
+			if (c == '\n') {
+				break;
+			}
+			cursor_.advance();
+		}
+	}
+
+	void consume_block_comment(SourceSize offset) {
+		uint32_t unclosed_count = 1;
+
+		while (cursor_.valid()) {
+			if (cursor_.match('*')) {
+				if (cursor_.match('/') && --unclosed_count == 0) {
+					return;
+				}
+			}
+			else if (cursor_.match('/')) {
+				if (cursor_.match('*')) {
+					++unclosed_count;
+				}
+			}
+			else {
+				cursor_.advance();
+			}
+		}
+
+		report(Message::unterminated_block_comment, offset, MessageArgs());
 	}
 
 	void on_percent() {
