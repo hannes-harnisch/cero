@@ -318,6 +318,7 @@ struct Lexer {
 
 	void on_left_angle() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('<')) {
 			if (cursor_.match('=')) {
 				tokens_.add(TokenKind::l_angle_angle_eq, offset, 0);
@@ -336,6 +337,7 @@ struct Lexer {
 
 	void on_right_angle() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('>')) {
 			if (cursor_.match('=')) {
 				tokens_.add(TokenKind::r_angle_angle_eq, offset, 0);
@@ -369,6 +371,7 @@ struct Lexer {
 
 	void on_colon() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match(':')) {
 			tokens_.add(TokenKind::colon_colon, offset, 0);
 		}
@@ -379,6 +382,7 @@ struct Lexer {
 
 	void on_equals() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('=')) {
 			tokens_.add(TokenKind::eq_eq, offset, 0);
 		}
@@ -392,6 +396,7 @@ struct Lexer {
 
 	void on_plus() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('+')) {
 			tokens_.add(TokenKind::plus_plus, offset, 0);
 		}
@@ -405,6 +410,7 @@ struct Lexer {
 
 	void on_minus() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('>')) {
 			tokens_.add(TokenKind::thin_arrow, offset, 0);
 		}
@@ -421,6 +427,7 @@ struct Lexer {
 
 	void on_star() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('=')) {
 			tokens_.add(TokenKind::star_eq, offset, 0);
 		}
@@ -431,7 +438,24 @@ struct Lexer {
 
 	void on_slash() {
 		SourceSize offset = get_offset_and_advance();
-		if (cursor_.match('=')) {
+
+		if (cursor_.match('/')) {
+			consume_line_comment();
+
+			if (util::has_flags(flags_, LexerFlags::emit_comments)) {
+				SourceSize length = cursor_.offset() - offset;
+				tokens_.add(TokenKind::line_comment, offset, length);
+			}
+		}
+		else if (cursor_.match('*')) {
+			consume_block_comment(offset);
+
+			if (util::has_flags(flags_, LexerFlags::emit_comments)) {
+				SourceSize length = cursor_.offset() - offset;
+				tokens_.add(TokenKind::block_comment, offset, length);
+			}
+		}
+		else if (cursor_.match('=')) {
 			tokens_.add(TokenKind::slash_eq, offset, 0);
 		}
 		else {
@@ -439,8 +463,40 @@ struct Lexer {
 		}
 	}
 
+	void consume_line_comment() {
+		while (char c = cursor_.peek()) {
+			if (c == '\n') {
+				break;
+			}
+			cursor_.advance();
+		}
+	}
+
+	void consume_block_comment(SourceSize offset) {
+		uint32_t unclosed_count = 1;
+
+		while (cursor_.valid()) {
+			if (cursor_.match('*')) {
+				if (cursor_.match('/') && --unclosed_count == 0) {
+					return;
+				}
+			}
+			else if (cursor_.match('/')) {
+				if (cursor_.match('*')) {
+					++unclosed_count;
+				}
+			}
+			else {
+				cursor_.advance();
+			}
+		}
+
+		report(Message::unterminated_block_comment, offset, MessageArgs());
+	}
+
 	void on_percent() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('=')) {
 			tokens_.add(TokenKind::percent_eq, offset, 0);
 		}
@@ -451,6 +507,7 @@ struct Lexer {
 
 	void on_ampersand() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('&')) {
 			if (cursor_.match('=')) {
 				tokens_.add(TokenKind::and_and_eq, offset, 0);
@@ -469,6 +526,7 @@ struct Lexer {
 
 	void on_pipe() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('|')) {
 			if (cursor_.match('=')) {
 				tokens_.add(TokenKind::pipe_pipe_eq, offset, 0);
@@ -487,6 +545,7 @@ struct Lexer {
 
 	void on_tilde() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('=')) {
 			tokens_.add(TokenKind::tilde_eq, offset, 0);
 		}
@@ -497,6 +556,7 @@ struct Lexer {
 
 	void on_bang() {
 		SourceSize offset = get_offset_and_advance();
+
 		if (cursor_.match('=')) {
 			tokens_.add(TokenKind::bang_eq, offset, 0);
 		}
