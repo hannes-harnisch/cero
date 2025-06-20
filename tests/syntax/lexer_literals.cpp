@@ -258,4 +258,58 @@ CERO_TEST(lexer_char_literals) {
 	check_tokens_equal(source, expected);
 }
 
+CERO_TEST(lexer_line_comments) {
+	const char* source = R"_____(
+//
+// abc
+// //
+// there must be trailing whitespace here -> 
+// // //
+)_____";
+
+	cero::Token expected[] = {
+	    {line_comment, 1,  2 },
+	    {line_comment, 4,  6 },
+	    {line_comment, 11, 5 },
+	    {line_comment, 17, 45},
+	    {line_comment, 63, 8 },
+	    {end_of_file,  72, 0 },
+	};
+	check_tokens_equal(source, expected);
+}
+
+CERO_TEST(lexer_block_comments) {
+	const char* source = R"_____(
+/**/
+/* abc
+*/
+/*
+
+
+*/
+/*/**/*/
+/*a/*b*/c*/
+/*/*/**/*/*/
+/***/
+/* **** */
+/*/ */
+/*// */
+)_____";
+
+	cero::Token expected[] = {
+	    {block_comment, 1,  4 },
+	    {block_comment, 6,  9 },
+	    {block_comment, 16, 7 },
+	    {block_comment, 24, 8 },
+	    {block_comment, 33, 11},
+	    {block_comment, 45, 12},
+	    {block_comment, 58, 5 },
+	    {block_comment, 64, 10},
+	    {block_comment, 75, 6 },
+	    {block_comment, 82, 7 },
+	    {end_of_file,   90, 0 },
+	};
+	check_tokens_equal(source, expected);
+}
+
 } // namespace tests
