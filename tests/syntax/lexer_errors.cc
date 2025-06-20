@@ -48,4 +48,13 @@ foo() {
 )_____");
 }
 
+CERO_TEST(lexer_unterminated_block_comment) {
+	TestReporter r;
+	r.expect(2, 1, cero::Message::unterminated_block_comment, cero::MessageArgs());
+
+	build_test_source(r, R"_____(
+/* abc
+)_____");
+}
+
 } // namespace tests
