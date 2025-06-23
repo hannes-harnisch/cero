@@ -24,6 +24,16 @@ public:
 		}
 	}
 
+	/// Returns the current character and advances or null if the cursor is at the end.
+	char next() {
+		if (it_ != end_) {
+			return *it_++;
+		}
+		else {
+			return '\0';
+		}
+	}
+
 	/// Moves the cursor to the next character.
 	void advance() {
 		if (it_ != end_) {
