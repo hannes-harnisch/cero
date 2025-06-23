@@ -57,4 +57,42 @@ CERO_TEST(lexer_unterminated_block_comment) {
 )_____");
 }
 
+CERO_TEST(lexer_invalid_character_ascii_control_char) {
+	TestReporter r;
+	r.expect(1, 5, cero::Message::invalid_character, cero::MessageArgs(0x7));
+	r.expect(1, 6, cero::Message::invalid_character, cero::MessageArgs(0x7));
+	r.expect(1, 7, cero::Message::invalid_character, cero::MessageArgs(0x7));
+
+	build_test_source(r, "main\a\a\a() {}");
+}
+
+CERO_TEST(lexer_invalid_character_non_unicode) {
+	TestReporter r;
+	r.expect(1, 10, cero::Message::invalid_character, cero::MessageArgs(0xff));
+	r.expect(1, 11, cero::Message::invalid_character, cero::MessageArgs(0xff));
+	r.expect(1, 12, cero::Message::invalid_character, cero::MessageArgs(0xff));
+
+	build_test_source(r, "something\xff\xff\xff() {}");
+}
+
+CERO_TEST(lexer_invalid_character_emoji) {
+	TestReporter r;
+	r.expect(1, 1, cero::Message::invalid_character, cero::MessageArgs(0xa0929ff0));
+	r.expect(1, 5, cero::Message::invalid_character, cero::MessageArgs(0xa0929ff0));
+	r.expect(1, 9, cero::Message::invalid_character, cero::MessageArgs(0xa0929ff0));
+	r.expect(1, 13, cero::Message::invalid_character, cero::MessageArgs(0xa0929ff0));
+	r.expect(1, 17, cero::Message::invalid_character, cero::MessageArgs(0xa0929ff0));
+	r.expect(1, 21, cero::Message::invalid_character, cero::MessageArgs(0xa0929ff0));
+	r.expect(1, 25, cero::Message::invalid_character, cero::MessageArgs(0xa0929ff0));
+
+	build_test_source(r, reinterpret_cast<const char*>(u8"💠💠💠💠💠💠💠"));
+}
+
+CERO_TEST(lexer_invalid_character_non_xid) {
+	TestReporter r;
+	r.expect(1, 11, cero::Message::invalid_character, cero::MessageArgs(0xa793e2));
+
+	build_test_source(r, reinterpret_cast<const char*>(u8"oopsie() {ⓧ}"));
+}
+
 } // namespace tests
