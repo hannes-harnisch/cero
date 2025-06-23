@@ -1,8 +1,8 @@
 ﻿#include "lexer.hh"
 
-#include "cero/syntax/ascii.hh"
 #include "cero/syntax/keywords.hh"
 #include "cero/syntax/source_cursor.hh"
+#include "cero/syntax/unicode.hh"
 
 namespace cero {
 
@@ -155,7 +155,7 @@ struct Lexer {
 		case '"':  on_quote(TokenKind::string_literal, '"'); break;
 		case '\'': on_quote(TokenKind::char_literal, '\''); break;
 
-		default: cursor_.advance(); break;
+		default: on_other_char(character); break;
 		}
 	}
 
@@ -218,10 +218,13 @@ struct Lexer {
 				cursor_.advance();
 			}
 			else if (is_ascii(c)) {
-				break;
+				break; // early return for ASCII characters after identifiers
 			}
-			else {
-				// TODO: Unicode
+			else [[unlikely]] {
+				SourceSize offset = get_offset_and_advance();
+				if (!consume_multibyte_utf8_char(c, offset, is_utf8_xid_continue_char)) {
+					break;
+				}
 			}
 		}
 	}
@@ -594,6 +597,38 @@ struct Lexer {
 
 		SourceSize length = cursor_.offset() - offset;
 		tokens_.put({kind, offset, length});
+	}
+
+	void on_other_char(char character) {
+		SourceSize offset = get_offset_and_advance();
+
+		if (consume_multibyte_utf8_char(character, offset, is_utf8_xid_start_char)) {
+			consume_word();
+
+			SourceSize length = cursor_.offset() - offset;
+			tokens_.put({TokenKind::identifier, offset, length});
+		}
+	}
+
+	bool consume_multibyte_utf8_char(char begin, SourceSize offset, bool (&utf8_predicate)(uint32_t utf8_char)) {
+		const uint8_t leading_byte = (uint8_t) begin;
+		const uint8_t leading_ones = (uint8_t) std::countl_one(leading_byte);
+
+		uint32_t utf8_char = leading_byte; // fill in first byte
+
+		if (leading_ones >= 2 && leading_ones <= 4) {
+			for (uint8_t i = 1; i < leading_ones; ++i) {
+				uint8_t c = (uint8_t) cursor_.next();
+				utf8_char |= (uint32_t) (c << (i * 8));
+			}
+
+			if (utf8_predicate(utf8_char)) {
+				return true;
+			}
+		}
+
+		report(Message::invalid_character, offset, MessageArgs(utf8_char));
+		return false;
 	}
 
 	SourceSize get_offset_and_advance() {

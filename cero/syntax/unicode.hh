@@ -2,6 +2,14 @@
 
 namespace cero {
 
+/// Determines whether the given UTF-8 character has the XID_Start property, which decides whether a character should be allowed
+/// to begin a Unicode identifier according to Unicode Standard Annex #31.
+bool is_utf8_xid_start_char(uint32_t utf8_char);
+
+/// Determines whether the given UTF-8 character has the XID_Continue property, which decides whether a character should be
+/// allowed to continue a Unicode identifier according to Unicode Standard Annex #31.
+bool is_utf8_xid_continue_char(uint32_t utf8_char);
+
 inline bool is_ascii(char c) {
 	return (uint8_t) c >> 7 == 0;
 }
