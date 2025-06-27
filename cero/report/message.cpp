@@ -13,6 +13,9 @@ std::string_view get_message_format_string(Message message) {
 	case invalid_character:          return "invalid character `0x{:x}`";
 	case missing_closing_quote:      return "missing closing quote";
 	case unterminated_block_comment: return "block comment must be closed with `*/`";
+
+	case expect_function_struct_or_enum:   return "expected function, struct or enum, but found {}";
+	case expect_paren_after_function_name: return "expected `(` after function name, but found {}";
 	}
 	assert_unreachable();
 }

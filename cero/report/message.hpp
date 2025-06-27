@@ -10,6 +10,9 @@ enum class Message : uint8_t {
 	invalid_character,
 	missing_closing_quote,
 	unterminated_block_comment,
+
+	expect_function_struct_or_enum,
+	expect_paren_after_function_name,
 };
 
 /// Gets the format string for outputting a specific diagnostic.
