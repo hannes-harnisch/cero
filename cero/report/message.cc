@@ -13,6 +13,11 @@ std::string_view get_message_format_string(Message message) {
 	case invalid_character:          return "invalid character `0x{:x}`";
 	case missing_closing_quote:      return "missing closing quote";
 	case unterminated_block_comment: return "block comment must be closed with `*/`";
+
+	case expect_function_struct_or_enum:    return "expected function, struct or enum, but found {}";
+	case expect_paren_after_function_name:  return "expected `(` after function name, but found {}";
+	case expect_paren_after_parameters:     return "expected `)` after parameters, but found {}";
+	case expect_brace_before_function_body: return "expected `{{` before function body, but found {}";
 	}
 	util::assert_unreachable();
 }

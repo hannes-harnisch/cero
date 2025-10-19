@@ -1,6 +1,7 @@
 ﻿#include "build.hh"
 
 #include "cero/syntax/lexer.hh"
+#include "cero/syntax/parser.hh"
 
 namespace cero {
 
@@ -9,7 +10,9 @@ void build_source(const Source& source, Reporter& reporter) {
 		const SourceView& source_view = *lock_result;
 
 		TokenList token_list = run_lexer(source_view, reporter, LexerFlags::none);
-		(void) token_list;
+
+		Ast ast = run_parser(token_list, source_view, reporter);
+		(void) ast;
 	}
 	else {
 		std::error_condition& error = lock_result.error();
