@@ -111,9 +111,15 @@ struct Token {
 	/// The result is meaningless if the given source is not the source from which the token was created during lexing.
 	CodeLocation locate_in(const SourceView& source, uint8_t tab_size) const;
 
+	/// Get the text from the source that the token corresponds to. The result is meaningless if the given source is not the
+	/// source from which the token was created during lexing.
+	std::string_view get_text(const SourceView& source) const;
+
 	friend bool operator==(Token, Token) = default;
 };
 
 static_assert(sizeof(Token) == 8);
+
+std::string_view get_token_message_format(TokenKind kind);
 
 } // namespace cero
