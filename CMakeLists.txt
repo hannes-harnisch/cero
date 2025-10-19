@@ -20,7 +20,7 @@ endif ()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 	add_compile_definitions(CERO_COMPILER_MSVC)
-	add_compile_options(/W4)
+	add_compile_options(/W4 /wd4200)
 else ()
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 		add_compile_definitions(CERO_COMPILER_CLANG)
@@ -31,13 +31,14 @@ else ()
 			add_compile_definitions(CERO_COMPILER_GCC)
 		endif ()
 	endif ()
+
 	add_compile_options(
 		-Wall
 		-Wextra
-		-Wpedantic
 		-Wconversion
 		-Wsign-conversion
 		-Wshadow
+		-Wno-missing-field-initializers
 	)
 endif ()
 
