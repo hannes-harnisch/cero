@@ -13,7 +13,10 @@ enum class Message : uint8_t {
 
 	expect_function_struct_or_enum,
 	expect_paren_after_function_name,
+	expect_parameter_type,
+	expect_parameter_name,
 	expect_paren_after_parameters,
+	expect_return_type,
 	expect_brace_before_function_body,
 };
 

@@ -29,6 +29,28 @@ main) {
 )_____");
 }
 
+CERO_TEST(parser_expect_parameter_type) {
+	TestReporter r;
+	r.expect(2, 5, cero::Message::expect_parameter_type, cero::MessageArgs("`,`"));
+
+	build_test_source(r, R"_____(
+foo(, bool x) -> bool {
+	return x;
+}
+)_____");
+}
+
+CERO_TEST(parser_expect_parameter_name) {
+	TestReporter r;
+	r.expect(2, 9, cero::Message::expect_parameter_name, cero::MessageArgs("`,`"));
+
+	build_test_source(r, R"_____(
+foo(bool, bool x) -> bool {
+	return x;
+}
+)_____");
+}
+
 CERO_TEST(parser_expect_paren_after_parameters) {
 	TestReporter r;
 	r.expect(2, 20, cero::Message::expect_paren_after_parameters, cero::MessageArgs("`->`"));
@@ -41,6 +63,22 @@ private foo(bool x -> bool {
 
 private goo(bool x} -> bool {
 	return x;
+}
+)_____");
+}
+
+CERO_TEST(parser_expect_return_type) {
+	TestReporter r;
+	r.expect(2, 24, cero::Message::expect_return_type, cero::MessageArgs("`{`"));
+	r.expect(6, 18, cero::Message::expect_return_type, cero::MessageArgs("`%`"));
+	r.expect(6, 18, cero::Message::expect_brace_before_function_body, cero::MessageArgs("`%`"));
+
+	build_test_source(r, R"_____(
+private foo(bool x) -> {
+	return x;
+}
+
+private goo() -> % {
 }
 )_____");
 }
