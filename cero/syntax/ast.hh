@@ -42,6 +42,10 @@ struct AstName {
 	std::string_view get(std::string_view source_text) const {
 		return source_text.substr(offset, length);
 	}
+
+	bool is_empty() const {
+		return length == 0;
+	}
 };
 
 enum class AccessModifier : uint8_t {

@@ -105,9 +105,17 @@ struct Parser {
 		SourceSize offset = cursor_.peek_offset();
 		AstFunctionParameter* param = create<AstFunctionParameter>(offset);
 
-		// TODO
-		cursor_.advance();
-		cursor_.advance();
+		param->type = expect_identifier(Message::expect_parameter_type);
+
+		// abort parsing and recover at the next definition so errors don't accumulate from a malformed function signature
+		if (param->type.is_empty()) {
+			throw ParseError();
+		}
+
+		param->name = expect_identifier(Message::expect_parameter_name);
+		if (param->name.is_empty()) {
+			throw ParseError();
+		}
 
 		return param;
 	}
@@ -130,9 +138,7 @@ struct Parser {
 		SourceSize offset = cursor_.peek_offset();
 		AstFunctionOutput* output = create<AstFunctionOutput>(offset);
 
-		// TODO
-		cursor_.advance();
-
+		output->type = expect_identifier(Message::expect_return_type);
 		return output;
 	}
 
@@ -148,6 +154,16 @@ struct Parser {
 	}
 
 	// Reporting utilities
+
+	AstName expect_identifier(Message message) {
+		if (std::optional token = cursor_.match_token(TokenKind::identifier)) {
+			return AstName::from(*token);
+		}
+		else {
+			report_expected(message);
+			return {};
+		}
+	}
 
 	void expect(TokenKind kind, Message message) {
 		if (!cursor_.match(kind)) {
