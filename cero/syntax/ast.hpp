@@ -49,6 +49,10 @@ struct AstName {
 		    .length = token.variable_length,
 		};
 	}
+
+	bool is_empty() const {
+		return length == 0;
+	}
 };
 
 struct AstFunctionParameter : AstNode {
