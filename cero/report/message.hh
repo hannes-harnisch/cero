@@ -18,6 +18,9 @@ enum class Message : uint8_t {
 	expect_paren_after_parameters,
 	expect_return_type,
 	expect_brace_before_function_body,
+	expect_expression,
+	expect_semicolon,
+	expect_closing_paren_in_call,
 };
 
 /// Gets the format string for outputting a specific diagnostic.

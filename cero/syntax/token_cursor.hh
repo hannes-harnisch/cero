@@ -27,6 +27,16 @@ public:
 		return it_->offset;
 	}
 
+	/// Returns the token after the current token.
+	Token peek_ahead() const {
+		if (it_->kind == TokenKind::end_of_file) {
+			return *it_;
+		}
+		else {
+			return it_[1];
+		}
+	}
+
 	/// Returns the current token and then advances if not at the end.
 	Token next() {
 		const Token token = *it_;
