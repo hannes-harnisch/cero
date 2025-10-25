@@ -11,6 +11,13 @@ enum class AstNodeKind {
 	function_def,
 	function_parameter,
 	function_output,
+	id_expr,
+	literal_expr,
+	block_expr,
+	return_expr,
+	unary_expr,
+	binary_expr,
+	call_expr,
 };
 
 struct AstNode {
@@ -80,6 +87,109 @@ struct AstFunctionDefinition : AstDefinition {
 	util::ArenaArray<AstFunctionParameter*> parameters;
 	util::ArenaArray<AstFunctionOutput*> outputs;
 	util::ArenaArray<AstExpression*> statements;
+};
+
+struct AstIdExpr : AstExpression {
+	static constexpr AstNodeKind kind = AstNodeKind::id_expr;
+
+	SourceSize length = {};
+};
+
+enum class LiteralKind {
+	dec_int,
+	hex_int,
+	bin_int,
+	oct_int,
+	float_,
+	char_,
+	string,
+};
+
+struct AstLiteralExpr : AstExpression {
+	static constexpr AstNodeKind kind = AstNodeKind::literal_expr;
+
+	LiteralKind literal_kind = {};
+	SourceSize length = {};
+};
+
+struct AstBlockExpr : AstExpression {
+	static constexpr AstNodeKind kind = AstNodeKind::block_expr;
+
+	util::ArenaArray<AstExpression*> statements;
+};
+
+struct AstReturnExpr : AstExpression {
+	static constexpr AstNodeKind kind = AstNodeKind::return_expr;
+
+	util::ArenaArray<AstExpression*> ret_values;
+};
+
+enum class UnaryOperator {
+	pre_increment,
+	pre_decrement,
+	post_increment,
+	post_decrement,
+	negate,
+	bit_not,
+	logic_not,
+	addr_of,
+	deref,
+};
+
+struct AstUnaryExpr : AstExpression {
+	static constexpr AstNodeKind kind = AstNodeKind::unary_expr;
+
+	UnaryOperator op = {};
+	AstExpression* operand = {};
+};
+
+enum class BinaryOperator {
+	add,
+	sub,
+	mul,
+	div,
+	rem,
+	bit_and,
+	bit_or,
+	bit_xor,
+	shl,
+	shr,
+	logic_and,
+	logic_or,
+	eq,
+	neq,
+	less,
+	less_eq,
+	greater,
+	greater_eq,
+	assign,
+	add_assign,
+	sub_assign,
+	mul_assign,
+	div_assign,
+	rem_assign,
+	bit_and_assign,
+	bit_or_assign,
+	xor_assign,
+	shl_assign,
+	shr_assign,
+	logic_and_assign,
+	logic_or_assign,
+};
+
+struct AstBinaryExpr : AstExpression {
+	static constexpr AstNodeKind kind = AstNodeKind::binary_expr;
+
+	BinaryOperator op = {};
+	AstExpression* left = {};
+	AstExpression* right = {};
+};
+
+struct AstCallExpr : AstExpression {
+	static constexpr AstNodeKind kind = AstNodeKind::call_expr;
+
+	AstExpression* callee = {};
+	util::ArenaArray<AstExpression*> args;
 };
 
 class Ast {
