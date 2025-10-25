@@ -102,4 +102,61 @@ public hoo() -< void {
 )_____");
 }
 
+CERO_TEST(expect_expression) {
+	TestReporter r;
+	r.expect(3, 5, cero::Message::expect_expression, cero::MessageArgs("`]`"));
+	r.expect(8, 1, cero::Message::expect_expression, cero::MessageArgs("`}`"));
+	r.expect(11, 5, cero::Message::expect_expression, cero::MessageArgs("`+=`"));
+
+	build_test_source(r, R"_____(
+a() {
+    ]
+}
+
+c() {
+	foo(
+}
+
+b() {
+    += x
+}
+
+foo() {
+}
+)_____");
+}
+
+CERO_TEST(expect_semicolon) {
+	TestReporter r;
+	r.expect(4, 1, cero::Message::expect_semicolon, cero::MessageArgs("`}`"));
+
+	build_test_source(r, R"_____(
+a() {
+    return 0
+}
+
+b() {
+    return 0;
+}
+)_____");
+}
+
+CERO_TEST(expect_closing_paren_after_function_call) {
+	TestReporter r;
+	r.expect(7, 1, cero::Message::expect_closing_paren_in_call, cero::MessageArgs("`}`"));
+
+	build_test_source(r, R"_____(
+foo(int32 _) {
+}
+
+f() {
+	foo(1
+}
+
+g() {
+	foo(2);
+}
+)_____");
+}
+
 } // namespace tests
