@@ -26,11 +26,11 @@ CERO_TEST(lexer_embedded_null) {
 
 CERO_TEST(lexer_string_literal_missing_closing_quote) {
 	TestReporter r;
-	r.expect(3, 28, cero::Message::missing_closing_quote, cero::MessageArgs());
+	r.expect(3, 15, cero::Message::missing_closing_quote, cero::MessageArgs());
 
 	build_test_source(r, R"_____(
 foo() {
-	let string = "Oh no...;
+	"Oh no...;
 	;
 }
 )_____");
@@ -38,11 +38,11 @@ foo() {
 
 CERO_TEST(lexer_char_literal_missing_closing_quote) {
 	TestReporter r;
-	r.expect(3, 19, cero::Message::missing_closing_quote, cero::MessageArgs());
+	r.expect(3, 8, cero::Message::missing_closing_quote, cero::MessageArgs());
 
 	build_test_source(r, R"_____(
 foo() {
-	let char = 'x;
+	'x;
 	;
 }
 )_____");
