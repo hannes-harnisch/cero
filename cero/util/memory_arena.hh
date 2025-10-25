@@ -51,44 +51,33 @@ class ArenaArray {
 public:
 	/// Appends an element to the array. If the array is full, it grows geometrically.
 	void put(const T& value, MemoryArena& arena) {
-		const uint32_t count = alloc_->count;
-		const size_t capacity = alloc_->capacity;
+		if (count_ == capacity_) {
+			size_t new_cap = std::max((size_t) capacity_ + capacity_ / 2, initial_capacity);
+			void* storage = arena.allocate(new_cap * sizeof(T), alignof(T));
 
-		if (count == capacity) {
-			size_t new_cap = std::max(capacity + capacity / 2, initial_capacity);
-			void* storage = arena.allocate(sizeof(Allocation) + new_cap * sizeof(T), alignof(Allocation));
-
-			Allocation* new_alloc = new (storage) Allocation;
-			new_alloc->count = count;
-			new_alloc->capacity = (uint32_t) new_cap;
-
-			::memcpy(new_alloc->array, alloc_->array, count * sizeof(T));
-			alloc_ = new_alloc;
+			::memcpy(storage, data_, count_ * sizeof(T));
+			data_ = static_cast<T*>(storage);
+			capacity_ = (uint32_t) new_cap;
 		}
 
-		new (alloc_->array + count) T(value);
-		++alloc_->count;
+		new (data_ + count_) T(value);
+		++count_;
 	}
 
 	const T* begin() const {
-		return alloc_->array;
+		return data_;
 	}
 
 	const T* end() const {
-		return alloc_->array + alloc_->count;
+		return data_ + count_;
 	}
 
 private:
-	struct Allocation {
-		uint32_t count = 0;
-		uint32_t capacity = 0;
-		T array[];
-	};
-
 	static constexpr size_t initial_capacity = 4;
-	static inline const Allocation empty = {};
 
-	Allocation* alloc_ = const_cast<Allocation*>(&empty);
+	T* data_ = nullptr;
+	uint32_t count_ = 0;
+	uint32_t capacity_ = 0;
 };
 
 } // namespace util
