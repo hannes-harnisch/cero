@@ -10,6 +10,13 @@ enum class AstNodeKind {
 	function_def,
 	function_parameter,
 	function_output,
+	ident_expr,
+	literal_expr,
+	block_expr,
+	return_expr,
+	unary_expr,
+	binary_expr,
+	call_expr,
 };
 
 struct AstNode {
@@ -90,6 +97,123 @@ struct AstFunctionDefinition : AstDefinition {
 
 	explicit AstFunctionDefinition(SourceSize offset) :
 	    AstDefinition({AstNodeKind::function_def, offset}) {
+	}
+};
+
+struct AstIdentExpr : AstExpression {
+	SourceSize length = {};
+
+	explicit AstIdentExpr(SourceSize offset) :
+	    AstExpression({AstNodeKind::ident_expr, offset}) {
+	}
+};
+
+enum class LiteralKind {
+	dec_int,
+	hex_int,
+	bin_int,
+	oct_int,
+	float_,
+	char_,
+	string,
+};
+
+struct AstLiteralExpr : AstExpression {
+	LiteralKind literal_kind = {};
+	SourceSize length = {};
+
+	explicit AstLiteralExpr(SourceSize offset) :
+	    AstExpression({AstNodeKind::literal_expr, offset}) {
+	}
+};
+
+struct AstBlockExpr : AstExpression {
+	NodeList<AstNode> statements;
+
+	explicit AstBlockExpr(SourceSize offset) :
+	    AstExpression({AstNodeKind::block_expr, offset}) {
+	}
+};
+
+struct AstReturnExpr : AstExpression {
+	NodeList<AstExpression> ret_values;
+
+	explicit AstReturnExpr(SourceSize offset) :
+	    AstExpression({AstNodeKind::return_expr, offset}) {
+	}
+};
+
+enum class UnaryOperator {
+	pre_increment,
+	pre_decrement,
+	post_increment,
+	post_decrement,
+	negate,
+	bit_not,
+	logic_not,
+	addr_of,
+	deref,
+};
+
+struct AstUnaryExpr : AstExpression {
+	UnaryOperator op = {};
+	const AstExpression* operand = {};
+
+	explicit AstUnaryExpr(SourceSize offset) :
+	    AstExpression({AstNodeKind::unary_expr, offset}) {
+	}
+};
+
+enum class BinaryOperator {
+	add,
+	sub,
+	mul,
+	div,
+	rem,
+	bit_and,
+	bit_or,
+	bit_xor,
+	shl,
+	shr,
+	logic_and,
+	logic_or,
+	eq,
+	neq,
+	less,
+	less_eq,
+	greater,
+	greater_eq,
+	assign,
+	add_assign,
+	sub_assign,
+	mul_assign,
+	div_assign,
+	rem_assign,
+	bit_and_assign,
+	bit_or_assign,
+	xor_assign,
+	shl_assign,
+	shr_assign,
+	logic_and_assign,
+	logic_or_assign,
+};
+
+struct AstBinaryExpr : AstExpression {
+	BinaryOperator op = {};
+	const AstExpression* left = {};
+	const AstExpression* right = {};
+
+	explicit AstBinaryExpr(SourceSize offset) :
+	    AstExpression({AstNodeKind::binary_expr, offset}) {
+	}
+};
+
+struct AstCallExpr : AstExpression {
+	const AstExpression* callee = {};
+	NodeList<AstExpression> args;
+
+	explicit AstCallExpr(SourceSize offset) :
+	    AstExpression({AstNodeKind::call_expr, offset}) {
 	}
 };
 

@@ -21,6 +21,9 @@ std::string_view get_message_format_string(Message message) {
 	case expect_paren_after_parameters:     return "expected `)` after parameters, but found {}";
 	case expect_return_type:                return "expected return type, but found {}";
 	case expect_brace_before_function_body: return "expected `{{` before function body, but found {}";
+	case expect_expression:                 return "expected expression, but found {}";
+	case expect_semicolon:                  return "expected a `;`, but found {}";
+	case expect_closing_paren_in_call:      return "expected closing `)` in function call, but found {}";
 	}
 	util::assert_unreachable();
 }
