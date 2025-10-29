@@ -1,5 +1,6 @@
 #include "parser.hpp"
 
+#include "cero/syntax/lexer.hpp"
 #include "cero/syntax/token_cursor.hpp"
 
 namespace cero {
@@ -146,8 +147,8 @@ struct Parser {
 		return func_def;
 	}
 
-	util::ArenaArray<AstFunctionParameter*> parse_function_definition_parameters() {
-		util::ArenaArray<AstFunctionParameter*> parameters;
+	NodeList<AstFunctionParameter> parse_function_definition_parameters() {
+		NodeList<AstFunctionParameter> parameters;
 
 		if (!cursor_.match(TokenKind::r_paren)) {
 			do {
@@ -181,8 +182,8 @@ struct Parser {
 		return param;
 	}
 
-	util::ArenaArray<AstFunctionOutput*> parse_function_definition_outputs() {
-		util::ArenaArray<AstFunctionOutput*> outputs;
+	NodeList<AstFunctionOutput> parse_function_definition_outputs() {
+		NodeList<AstFunctionOutput> outputs;
 
 		if (cursor_.match(TokenKind::thin_arrow)) {
 			do {
@@ -203,8 +204,8 @@ struct Parser {
 		return output;
 	}
 
-	util::ArenaArray<AstExpression*> parse_block() {
-		util::ArenaArray<AstExpression*> statements;
+	NodeList<AstExpression> parse_block() {
+		NodeList<AstExpression> statements;
 
 		while (!cursor_.match(TokenKind::r_brace)) {
 			try {

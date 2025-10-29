@@ -27,6 +27,9 @@ struct AstNode {
 	CodeLocation locate_in(const SourceView& source, uint8_t tab_size) const;
 };
 
+template<std::derived_from<AstNode> T>
+using NodeList = util::ArenaArray<const T*>;
+
 struct AstName {
 	SourceSize offset = 0;
 	SourceSize length = 0;
@@ -64,7 +67,7 @@ struct AstExpression : AstNode {};
 struct AstRoot : AstNode {
 	static constexpr AstNodeKind kind = AstNodeKind::root;
 
-	util::ArenaArray<AstDefinition*> definitions;
+	NodeList<AstDefinition> definitions;
 };
 
 struct AstFunctionParameter : AstNode {
@@ -84,9 +87,9 @@ struct AstFunctionOutput : AstNode {
 struct AstFunctionDefinition : AstDefinition {
 	static constexpr AstNodeKind kind = AstNodeKind::function_def;
 
-	util::ArenaArray<AstFunctionParameter*> parameters;
-	util::ArenaArray<AstFunctionOutput*> outputs;
-	util::ArenaArray<AstExpression*> statements;
+	NodeList<AstFunctionParameter> parameters;
+	NodeList<AstFunctionOutput> outputs;
+	NodeList<AstExpression> statements;
 };
 
 struct AstIdExpr : AstExpression {
@@ -115,13 +118,13 @@ struct AstLiteralExpr : AstExpression {
 struct AstBlockExpr : AstExpression {
 	static constexpr AstNodeKind kind = AstNodeKind::block_expr;
 
-	util::ArenaArray<AstExpression*> statements;
+	NodeList<AstExpression> statements;
 };
 
 struct AstReturnExpr : AstExpression {
 	static constexpr AstNodeKind kind = AstNodeKind::return_expr;
 
-	util::ArenaArray<AstExpression*> ret_values;
+	NodeList<AstExpression> ret_values;
 };
 
 enum class UnaryOperator {
@@ -140,7 +143,7 @@ struct AstUnaryExpr : AstExpression {
 	static constexpr AstNodeKind kind = AstNodeKind::unary_expr;
 
 	UnaryOperator op = {};
-	AstExpression* operand = {};
+	const AstExpression* operand = {};
 };
 
 enum class BinaryOperator {
@@ -181,19 +184,20 @@ struct AstBinaryExpr : AstExpression {
 	static constexpr AstNodeKind kind = AstNodeKind::binary_expr;
 
 	BinaryOperator op = {};
-	AstExpression* left = {};
-	AstExpression* right = {};
+	const AstExpression* left = {};
+	const AstExpression* right = {};
 };
 
 struct AstCallExpr : AstExpression {
 	static constexpr AstNodeKind kind = AstNodeKind::call_expr;
 
-	AstExpression* callee = {};
-	util::ArenaArray<AstExpression*> args;
+	const AstExpression* callee = {};
+	NodeList<AstExpression> args;
 };
 
 class Ast {
 public:
+	const AstRoot& get_root() const;
 
 private:
 	util::MemoryArena arena_;
