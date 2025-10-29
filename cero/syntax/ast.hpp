@@ -29,6 +29,9 @@ struct AstNode {
 	}
 };
 
+template<std::derived_from<AstNode> T>
+using NodeList = ArenaArray<const T*>;
+
 struct AstDefinition : AstNode {};
 
 struct AstExpression : AstNode {};
@@ -36,7 +39,7 @@ struct AstExpression : AstNode {};
 struct AstRoot : AstNode {
 	static constexpr AstNodeKind kind = AstNodeKind::root;
 
-	ArenaArray<AstDefinition*> definitions;
+	NodeList<AstDefinition> definitions;
 };
 
 enum class AccessModifier : uint8_t {
@@ -81,9 +84,9 @@ struct AstFunctionDefinition : AstDefinition {
 
 	AccessModifier access_modifier = {};
 	AstName name;
-	ArenaArray<AstFunctionParameter*> parameters;
-	ArenaArray<AstFunctionOutput*> outputs;
-	ArenaArray<AstExpression*> statements;
+	NodeList<AstFunctionParameter> parameters;
+	NodeList<AstFunctionOutput> outputs;
+	NodeList<AstExpression> statements;
 };
 
 struct AstIdExpr : AstExpression {
@@ -112,13 +115,13 @@ struct AstLiteralExpr : AstExpression {
 struct AstBlockExpr : AstExpression {
 	static constexpr AstNodeKind kind = AstNodeKind::block_expr;
 
-	ArenaArray<AstExpression*> statements;
+	NodeList<AstExpression> statements;
 };
 
 struct AstReturnExpr : AstExpression {
 	static constexpr AstNodeKind kind = AstNodeKind::return_expr;
 
-	ArenaArray<AstExpression*> ret_values;
+	NodeList<AstExpression> ret_values;
 };
 
 enum class UnaryOperator {
@@ -137,7 +140,7 @@ struct AstUnaryExpr : AstExpression {
 	static constexpr AstNodeKind kind = AstNodeKind::unary_expr;
 
 	UnaryOperator op = {};
-	AstExpression* operand = {};
+	const AstExpression* operand = {};
 };
 
 enum class BinaryOperator {
@@ -178,19 +181,20 @@ struct AstBinaryExpr : AstExpression {
 	static constexpr AstNodeKind kind = AstNodeKind::binary_expr;
 
 	BinaryOperator op = {};
-	AstExpression* left = {};
-	AstExpression* right = {};
+	const AstExpression* left = {};
+	const AstExpression* right = {};
 };
 
 struct AstCallExpr : AstExpression {
 	static constexpr AstNodeKind kind = AstNodeKind::call_expr;
 
-	AstExpression* callee = {};
-	ArenaArray<AstExpression*> args;
+	const AstExpression* callee = {};
+	NodeList<AstExpression> args;
 };
 
 class Ast {
 public:
+	const AstRoot& get_root() const;
 
 private:
 	MemoryArena arena_;
