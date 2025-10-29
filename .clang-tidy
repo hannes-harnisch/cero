@@ -1,5 +1,7 @@
 Checks: >
+    -cppcoreguidelines-pro-type-static-cast-downcast,
     -hicpp-exception-baseclass,
+    -hicpp-multiway-paths-covered,
     -misc-no-recursion,
     -modernize-return-braced-init-list,
     -modernize-use-auto,
