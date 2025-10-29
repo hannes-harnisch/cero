@@ -4,6 +4,7 @@
 #include "common/test_reporter.hh"
 
 #include <cero/syntax/lexer.hh>
+#include <cero/syntax/parser.hh>
 
 namespace tests {
 
@@ -24,6 +25,16 @@ void check_tokens_equal(const char* source_text, std::span<const cero::Token> ex
 
 	// checking for extra or missing tokens
 	REQUIRE_EQ(received_tokens.size(), expected_tokens.size());
+}
+
+cero::Ast parse_source(const char* source_text) {
+	cero::SourceView source = make_test_source(source_text);
+
+	TestReporter r;
+	cero::TokenList token_list = cero::run_lexer(source, r, cero::LexerFlags::none);
+	cero::Ast ast = cero::run_parser(token_list, source, r);
+
+	return ast;
 }
 
 } // namespace tests
