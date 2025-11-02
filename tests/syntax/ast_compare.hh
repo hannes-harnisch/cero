@@ -41,7 +41,13 @@ public:
 	void function_definition(cero::AccessModifier access, std::string_view name, ChildScope cs);
 	void function_parameter(std::string_view name, ChildScope cs);
 	void function_output(std::string_view name, ChildScope cs);
-	void id_expr(std::string_view name);
+	void ident_expr(std::string_view ident);
+	void literal_expr(cero::LiteralKind literal_kind, std::string_view literal);
+	void block_expr(ChildScope cs);
+	void return_expr(ChildScope cs);
+	void unary_expr(cero::UnaryOperator op, ChildScope cs);
+	void binary_expr(cero::BinaryOperator op, ChildScope cs);
+	void call_expr(ChildScope cs);
 
 	AstCompare(AstCompare&&) = delete;
 
@@ -79,7 +85,7 @@ private:
 	ExpectedState<NodeQueue> expected_children_;
 	ExpectedState<cero::AstNodeKind> node_kind_;
 	ExpectedState<cero::AccessModifier> access_;
-	ExpectedState<std::string_view> name_;
+	ExpectedState<std::string_view> str_;
 	ExpectedState<cero::UnaryOperator> unary_op_;
 	ExpectedState<cero::BinaryOperator> binary_op_;
 	ExpectedState<cero::LiteralKind> literal_kind_;

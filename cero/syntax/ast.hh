@@ -73,7 +73,7 @@ struct AstRoot {
 };
 
 struct AstFunctionParameter : AstNode {
-	AstName type;
+	const AstExpression* type = {};
 	AstName name;
 
 	explicit AstFunctionParameter(SourceSize offset) :
@@ -82,7 +82,7 @@ struct AstFunctionParameter : AstNode {
 };
 
 struct AstFunctionOutput : AstNode {
-	AstName type;
+	const AstExpression* type = {};
 	AstName name;
 
 	explicit AstFunctionOutput(SourceSize offset) :
@@ -106,6 +106,10 @@ struct AstIdentExpr : AstExpression {
 	explicit AstIdentExpr(SourceSize offset) :
 	    AstExpression({AstNodeKind::ident_expr, offset}) {
 	}
+
+	std::string_view get(std::string_view source_text) const {
+		return source_text.substr(token_offset, length);
+	}
 };
 
 enum class LiteralKind {
@@ -124,6 +128,10 @@ struct AstLiteralExpr : AstExpression {
 
 	explicit AstLiteralExpr(SourceSize offset) :
 	    AstExpression({AstNodeKind::literal_expr, offset}) {
+	}
+
+	std::string_view get(std::string_view source_text) const {
+		return source_text.substr(token_offset, length);
 	}
 };
 
