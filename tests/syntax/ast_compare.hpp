@@ -41,7 +41,13 @@ public:
 	void function_definition(cero::AccessModifier access, std::string_view name, ChildScope cs);
 	void function_parameter(std::string_view name, ChildScope cs);
 	void function_output(std::string_view name, ChildScope cs);
-	void id_expr(std::string_view name);
+	void id_expr(std::string_view id);
+	void literal_expr(cero::LiteralKind literal_kind, std::string_view literal);
+	void block_expr(ChildScope cs);
+	void return_expr(ChildScope cs);
+	void unary_expr(cero::UnaryOperator op, ChildScope cs);
+	void binary_expr(cero::BinaryOperator op, ChildScope cs);
+	void call_expr(ChildScope cs);
 
 	AstCompare(AstCompare&&) = delete;
 
@@ -79,7 +85,7 @@ private:
 	ExpectedState<NodeQueue> expected_children_;
 	ExpectedState<cero::AstNodeKind> node_kind_;
 	ExpectedState<cero::AccessModifier> access_;
-	ExpectedState<std::string_view> name_;
+	ExpectedState<std::string_view> str_;
 	ExpectedState<cero::UnaryOperator> unary_op_;
 	ExpectedState<cero::BinaryOperator> binary_op_;
 	ExpectedState<cero::LiteralKind> literal_kind_;
@@ -89,7 +95,7 @@ private:
 	void visit_function_parameter(const cero::AstFunctionParameter& param);
 	void visit_function_output(const cero::AstFunctionOutput& output);
 	void visit_id_expr(const cero::AstIdExpr& id_expr);
-	void visit_literal_expr(const cero::AstLiteralExpr& lit_expr);
+	void visit_literal_expr(const cero::AstLiteralExpr& literal_expr);
 	void visit_block_expr(const cero::AstBlockExpr& block_expr);
 	void visit_return_expr(const cero::AstReturnExpr& return_expr);
 	void visit_unary_expr(const cero::AstUnaryExpr& unary_expr);

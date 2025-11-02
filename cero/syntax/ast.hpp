@@ -68,14 +68,14 @@ struct AstName {
 struct AstFunctionParameter : AstNode {
 	static constexpr AstNodeKind kind = AstNodeKind::function_parameter;
 
-	AstName type;
+	const AstExpression* type;
 	AstName name;
 };
 
 struct AstFunctionOutput : AstNode {
 	static constexpr AstNodeKind kind = AstNodeKind::function_output;
 
-	AstName type;
+	const AstExpression* type;
 	AstName name;
 };
 
