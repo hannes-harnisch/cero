@@ -71,7 +71,6 @@ CERO_TEST(parser_expect_return_type) {
 	TestReporter r;
 	r.expect(2, 24, cero::Message::expect_return_type, cero::MessageArgs("`{`"));
 	r.expect(6, 18, cero::Message::expect_return_type, cero::MessageArgs("`%`"));
-	r.expect(6, 18, cero::Message::expect_brace_before_function_body, cero::MessageArgs("`%`"));
 
 	build_test_source(r, R"_____(
 private foo(bool x) -> {
