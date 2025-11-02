@@ -167,14 +167,10 @@ struct Parser {
 		SourceSize offset = cursor_.peek_offset();
 		AstFunctionParameter* param = ast_.create<AstFunctionParameter>(offset);
 
-		param->type = expect_identifier(Message::expect_parameter_type);
+		param->type = parse_type(Message::expect_parameter_type);
+		param->name = expect_identifier(Message::expect_parameter_name);
 
 		// abort parsing and recover at the next definition so errors don't accumulate from a malformed function signature
-		if (param->type.is_empty()) {
-			throw ParseError();
-		}
-
-		param->name = expect_identifier(Message::expect_parameter_name);
 		if (param->name.is_empty()) {
 			throw ParseError();
 		}
@@ -200,8 +196,18 @@ struct Parser {
 		SourceSize offset = cursor_.peek_offset();
 		AstFunctionOutput* output = ast_.create<AstFunctionOutput>(offset);
 
-		output->type = expect_identifier(Message::expect_return_type);
+		output->type = parse_type(Message::expect_return_type);
+		// TODO: named return types
 		return output;
+	}
+
+	AstExpression* parse_type(Message error_message) {
+		if (cursor_.peek_kind() == TokenKind::identifier) {
+			return on_identifier(*this);
+		}
+
+		report_expected(error_message);
+		throw ParseError();
 	}
 
 	NodeList<AstExpression> parse_block() {
@@ -454,6 +460,8 @@ struct Parser {
 
 	template<BinaryOperator op>
 	static AstExpression* on_binary_operator(Parser& p, AstExpression* left) {
+		p.cursor_.advance();
+
 		if constexpr (op == BinaryOperator::shr) {
 			// consume the second right angle bracket since `>>` is lexed as two tokens
 			p.cursor_.advance();
