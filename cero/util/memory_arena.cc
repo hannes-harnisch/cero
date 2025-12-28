@@ -28,6 +28,7 @@ void* MemoryArena::allocate(size_t size, size_t alignment) {
 void MemoryArena::create_block(size_t size, size_t alignment) {
 	size_t block_size = std::max(next_block_size_, size + sizeof(Block));
 	void* block = ::operator new(block_size);
+	total_size_ += block_size;
 
 	Block* new_head = new (block) Block {.next = head_block_};
 	head_block_ = new_head;
@@ -49,6 +50,12 @@ void MemoryArena::release() {
 		::operator delete(block);
 		block = next;
 	}
+
+	total_size_ = 0;
+}
+
+size_t MemoryArena::get_total_size() const {
+	return total_size_;
 }
 
 MemoryArena::~MemoryArena() {
@@ -59,7 +66,8 @@ MemoryArena::MemoryArena(MemoryArena&& other) noexcept :
     next_ptr_(std::exchange(other.next_ptr_, nullptr)),
     remaining_size_(std::exchange(other.remaining_size_, 0)),
     next_block_size_(std::exchange(other.next_block_size_, initial_block_size)),
-    head_block_(std::exchange(other.head_block_, nullptr)) {
+    head_block_(std::exchange(other.head_block_, nullptr)),
+    total_size_(std::exchange(other.total_size_, 0)) {
 }
 
 MemoryArena& MemoryArena::operator=(MemoryArena&& other) noexcept {
@@ -70,6 +78,7 @@ MemoryArena& MemoryArena::operator=(MemoryArena&& other) noexcept {
 		remaining_size_ = std::exchange(other.remaining_size_, 0);
 		next_block_size_ = std::exchange(other.next_block_size_, initial_block_size);
 		head_block_ = std::exchange(other.head_block_, nullptr);
+		total_size_ = std::exchange(other.total_size_, 0);
 	}
 	return *this;
 }
