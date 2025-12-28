@@ -230,6 +230,8 @@ class Ast {
 public:
 	const AstRoot& get_root() const;
 
+	size_t get_memory_usage() const;
+
 private:
 	util::MemoryArena arena_;
 	AstRoot* root_;

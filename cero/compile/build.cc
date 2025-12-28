@@ -1,5 +1,6 @@
 ﻿#include "build.hh"
 
+#include "cero/sema/semantic_analyzer.hh"
 #include "cero/syntax/lexer.hh"
 #include "cero/syntax/parser.hh"
 
@@ -12,7 +13,9 @@ void build_source(const Source& source, Reporter& reporter) {
 		TokenList token_list = run_lexer(source_view, reporter, LexerFlags::none);
 
 		Ast ast = run_parser(token_list, source_view, reporter);
-		(void) ast;
+
+		IrGraph cfg = run_semantic_analyzer(ast, source_view, reporter);
+		(void) cfg;
 	}
 	else {
 		std::error_condition& error = lock_result.error();

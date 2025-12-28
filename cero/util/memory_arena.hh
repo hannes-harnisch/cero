@@ -20,6 +20,9 @@ public:
 	/// Deallocates all memory blocks. Non-trivial objects must be destroyed manually.
 	void release();
 
+	/// Returns the	total size of all memory blocks in the arena, not counting overhead from allocator bookkeeping.
+	size_t get_total_size() const;
+
 	/// Creates an object in the arena and returns a pointer to it. The object must be destroyed manually if it is not trivial.
 	template<typename T, typename... Args>
 	T* create(Args&&... args) {
@@ -40,6 +43,7 @@ private:
 	size_t remaining_size_ = 0;
 	size_t next_block_size_ = initial_block_size;
 	Block* head_block_ = nullptr;
+	size_t total_size_ = 0;
 
 	void create_block(size_t size, size_t alignment);
 };
